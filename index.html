@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>APUSONIC · Original Sound · Lima, Perú</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&family=Mulish:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<div id="loadveil" aria-hidden="true"></div>
+
+<header id="hdr">
+  <a class="brand" href="#top" aria-label="Apusonic home"><img class="logo-mb" src="assets/img/apusonic-logo.png" alt="Apusonic"></a>
+  <nav>
+    <a class="navlink" href="#services" data-i18n="nav.services">Services</a>
+    <a class="navlink" href="#markets" data-i18n="nav.solutions">Solutions</a>
+    <a class="navlink" href="#contact" data-i18n="nav.contact">Contact</a>
+    <button class="soundtoggle" id="soundToggle" aria-label="Play sound"><span class="dot"></span><span id="stText" data-i18n="sound.idle">Sound</span></button>
+    <div class="lang" id="lang">
+      <button class="lang-toggle" id="langToggle" aria-haspopup="listbox" aria-expanded="false" aria-label="Select language">
+        <span class="flag" id="langFlag"></span>
+        <svg class="lang-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <ul class="lang-menu" id="langMenu" role="listbox" aria-label="Language">
+        <li role="option" data-lang="en" tabindex="0">
+          <span class="flag"><svg class="fl" viewBox="0 0 76 40" aria-hidden="true"><rect width="76" height="40" fill="#fff"/><g fill="#B22234"><rect y="0" width="76" height="3.08"/><rect y="6.15" width="76" height="3.08"/><rect y="12.31" width="76" height="3.08"/><rect y="18.46" width="76" height="3.08"/><rect y="24.62" width="76" height="3.08"/><rect y="30.77" width="76" height="3.08"/><rect y="36.92" width="76" height="3.08"/></g><rect width="30.4" height="21.54" fill="#3C3B6E"/><g fill="#fff"><circle cx="3" cy="2.4" r=".9"/><circle cx="8" cy="2.4" r=".9"/><circle cx="13" cy="2.4" r=".9"/><circle cx="18" cy="2.4" r=".9"/><circle cx="23" cy="2.4" r=".9"/><circle cx="28" cy="2.4" r=".9"/><circle cx="5.5" cy="5.7" r=".9"/><circle cx="10.5" cy="5.7" r=".9"/><circle cx="15.5" cy="5.7" r=".9"/><circle cx="20.5" cy="5.7" r=".9"/><circle cx="25.5" cy="5.7" r=".9"/><circle cx="3" cy="9" r=".9"/><circle cx="8" cy="9" r=".9"/><circle cx="13" cy="9" r=".9"/><circle cx="18" cy="9" r=".9"/><circle cx="23" cy="9" r=".9"/><circle cx="28" cy="9" r=".9"/><circle cx="5.5" cy="12.3" r=".9"/><circle cx="10.5" cy="12.3" r=".9"/><circle cx="15.5" cy="12.3" r=".9"/><circle cx="20.5" cy="12.3" r=".9"/><circle cx="25.5" cy="12.3" r=".9"/><circle cx="3" cy="15.6" r=".9"/><circle cx="8" cy="15.6" r=".9"/><circle cx="13" cy="15.6" r=".9"/><circle cx="18" cy="15.6" r=".9"/><circle cx="23" cy="15.6" r=".9"/><circle cx="28" cy="15.6" r=".9"/><circle cx="5.5" cy="18.9" r=".9"/><circle cx="10.5" cy="18.9" r=".9"/><circle cx="15.5" cy="18.9" r=".9"/><circle cx="20.5" cy="18.9" r=".9"/><circle cx="25.5" cy="18.9" r=".9"/></g></svg></span>
+          <span class="lang-name">English</span>
+        </li>
+        <li role="option" data-lang="es" tabindex="0">
+          <span class="flag"><svg class="fl" viewBox="0 0 9 6" aria-hidden="true"><rect width="9" height="6" fill="#fff"/><rect width="3" height="6" fill="#D91023"/><rect x="6" width="3" height="6" fill="#D91023"/></svg></span>
+          <span class="lang-name">Español <em>· Perú</em></span>
+        </li>
+        <li role="option" data-lang="pt" tabindex="0">
+          <span class="flag"><svg class="fl" viewBox="0 0 10 7" aria-hidden="true"><rect width="10" height="7" fill="#009C3B"/><polygon points="5,0.65 9.35,3.5 5,6.35 0.65,3.5" fill="#FFDF00"/><circle cx="5" cy="3.5" r="1.55" fill="#002776"/><path d="M3.55 3.0 A1.55 1.55 0 0 1 6.45 3.45" fill="none" stroke="#fff" stroke-width=".3"/></svg></span>
+          <span class="lang-name">Português</span>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO — a living mountain range. Scroll dollies the camera down through the ranges. -->
+  <section class="hero" id="hero">
+    <div class="hero-stage" id="heroStage">
+      <div class="sky" aria-hidden="true">
+        <div class="stars" id="stars"></div>
+        <div class="sun"></div>
+        <div class="alpenglow"></div>
+      </div>
+      <canvas id="glcanvas" aria-hidden="true"></canvas>
+      <div class="ranges" id="ranges" aria-hidden="true"></div>
+      <div class="atmo grain" aria-hidden="true"></div>
+      <div class="atmo vignette" aria-hidden="true"></div>
+      <div class="hero-word">
+        <img class="logo-mb hero-logo" src="assets/img/apusonic-logo.png" alt="Apusonic">
+        <p class="tagline" data-i18n="hero.tagline">Sound from the summit</p>
+      </div>
+      <div class="scrollcue"><span data-i18n="scrollcue">Descend</span><span class="ln"></span></div>
+      <div class="whiteout" id="whiteout" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <!-- site content (pinned + crossfaded in behind the hero during the intro) -->
+  <div id="site">
+
+  <!-- APU QUOTE (full-bleed grey moment, then a grey→white wash into the next section) -->
+  <section class="apuband">
+    <p class="quote" data-i18n="apu.quote">In the Andes, the great mountain that watches over its people is called an <span class="red">Apu</span>.</p>
+  </section>
+  <div class="apufade" aria-hidden="true"></div>
+
+  <!-- MANIFESTO -->
+  <section class="wrap section manifesto reveal">
+    <h2 class="lead" data-i18n="manifesto.lead">We don&rsquo;t license Peru&rsquo;s sound.<br><span class="red">We originate it.</span></h2>
+    <div class="mani-grid">
+      <div class="mani"><h3 data-i18n="mani.1.h"><span class="pk">&#9650;</span> The origination edge</h3><p data-i18n="mani.1.p">We don&rsquo;t pull tracks off a shelf. We write them, recorded with a full orchestra in Lima, so the work feels local, performs nationally, and moves people.</p></div>
+      <div class="mani"><h3 data-i18n="mani.2.h"><span class="pk">&#9650;</span> The rights engine</h3><p data-i18n="mani.2.p">Every original note is registered with APDAYC and the regional societies, so a single commission keeps earning royalties on every broadcast, stream, and public play, for the life of the work.</p></div>
+      <div class="mani"><h3 data-i18n="mani.3.h"><span class="pk">&#9650;</span> The only partner you need</h3><p data-i18n="mani.3.p">Composition, sonic branding, rights, and delivery, all under one roof in Lima. The first full-stack music house built for Peru&rsquo;s screens, stadiums, and institutions.</p></div>
+    </div>
+  </section>
+
+  <!-- SECTORS -->
+  <section class="sectors reveal">
+    <span class="lbl" data-i18n="sectors.label">Made for</span>
+    <div class="marquee"><div class="mtrack" id="mtrack">
+      <span class="it" data-i18n="sec.1">Streaming &amp; cable TV</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.2">Film</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.3">Football clubs</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.4">Video games</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.5">State broadcast</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.6">Telenovela</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.7">Institutions</span><span class="pk">&#9650;</span><span class="it" data-i18n="sec.8">Advertising</span><span class="pk">&#9650;</span>
+    </div></div>
+  </section>
+
+  <!-- ORCHESTRA BANNER (full-width) -->
+  <section class="banner reveal" id="banner" aria-label="Apusonic — recorded with a full orchestra in Lima">
+    <img src="assets/img/orchestra_Wide.jpg" alt="An Apusonic session: a full orchestra recording in Lima, Perú">
+  </section>
+
+  <!-- SERVICES (what we do — 4 capabilities, music first) -->
+  <section class="wrap section svc" id="services">
+    <div class="sec-head reveal">
+      <p class="eyebrow" data-i18n="services.eyebrow">Our services</p>
+      <h2 class="big" data-i18n="services.h">One house.<br>Every sound a story needs.</h2>
+    </div>
+    <div class="grid cols2">
+      <div class="card svc reveal"><span class="num">01</span><h3 data-i18n="svc.1.h">Bespoke Composition &amp; Sonic DNA</h3><p data-i18n="svc.1.p">Original scores for screen, brand anthems, and audio logos &mdash; written for you, recorded, mixed, and delivered as stems. Work-for-hire, with a retained writer&rsquo;s share.</p></div>
+      <div class="card svc reveal"><span class="num">02</span><h3 data-i18n="svc.2.h">Brand &amp; Sonic Identity</h3><p data-i18n="svc.2.p">A complete audio identity for a club or institution: anthem, hype cues, stingers, digital-platform sounds, and stadium playback masters &mdash; built to play for decades.</p></div>
+      <div class="card svc reveal"><span class="num">03</span><h3 data-i18n="svc.3.h">ADR &amp; Localized Scoring</h3><p data-i18n="svc.3.p">When a foreign series is repackaged for Latin America, we compose the adapted score for every episode &mdash; original creation, not just localized dialogue.</p></div>
+      <div class="card svc reveal"><span class="num">04</span><h3 data-i18n="svc.4.h">Technology-Enabled Delivery</h3><p data-i18n="svc.4.p">Embedded measurement and versioning, so clients can hear the ROI on their sound &mdash; our creativity made auditable, trackable, and indispensable.</p></div>
+    </div>
+  </section>
+
+  <!-- PACKAGES (how to commission us — 4 productized engagements, one row, no library) -->
+  <section class="wrap section pkgs" id="packages">
+    <div class="sec-head reveal">
+      <p class="eyebrow" data-i18n="pkg.eyebrow">Packages</p>
+      <h2 class="big" data-i18n="pkg.h">Four ways to commission. <span class="red">Every note original.</span></h2>
+      <p class="pkg-note" data-i18n="pkg.note">Nothing here is pre-made. Every package is written for you, note by note &mdash; there is no catalog to buy from.</p>
+    </div>
+    <div class="grid cols4">
+      <div class="card pkg reveal"><span class="pk">&#9650;</span><h3 data-i18n="pkg.1.h">Original Score</h3><p data-i18n="pkg.1.p">An original commercial score, composed to picture and delivered finished &mdash; sessions, mix, and full stems.</p></div>
+      <div class="card pkg reveal"><span class="pk">&#9650;</span><h3 data-i18n="pkg.2.h">Sonic Identity Suite</h3><p data-i18n="pkg.2.p">A complete sonic identity for a club or brand &mdash; a 2&ndash;3 minute anthem, a set of stingers, a digital kit, and a stadium playback master, with annual updates.</p></div>
+      <div class="card pkg reveal"><span class="pk">&#9650;</span><h3 data-i18n="pkg.3.h">Adaptive Game Score</h3><p data-i18n="pkg.3.p">A dynamic, in-game score that responds to play &mdash; interactive layers, stingers, and sound design, delivered through middleware.</p></div>
+      <div class="card pkg reveal"><span class="pk">&#9650;</span><h3 data-i18n="pkg.4.h">Episode ADR &amp; Localization</h3><p data-i18n="pkg.4.p">Per-episode adapted scoring for a foreign series brought to Latin America &mdash; original transitional cues and bilingual delivery, not just dubbed dialogue.</p></div>
+    </div>
+  </section>
+
+  <!-- MARKETS (6, 3 per row) -->
+  <section class="wrap section markets" id="markets">
+    <div class="sec-head reveal">
+      <p class="eyebrow" data-i18n="markets.eyebrow">Who we serve</p>
+      <h2 class="big" data-i18n="markets.h">Peru produces more <span class="red">than it can score.</span></h2>
+    </div>
+    <div class="grid cols3">
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.4.tag">Government &amp; Institutions</span><h3 data-i18n="mk.4.h">Sound that represents a nation.</h3><p data-i18n="mk.4.p">State commissions, civic anthems, and original orchestral works. Public money meets permanent sound, written to stand for a country and registered to endure.</p></div>
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.3.tag">Stadiums &amp; Clubs</span><h3 data-i18n="mk.3.h">Anthems a city sings for decades.</h3><p data-i18n="mk.3.p">The country&rsquo;s biggest clubs commission new anthems, in-stadium audio, and digital identity tracks. High-budget, emotional assets. We make them original, and we make them ownable.</p></div>
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.1.tag">Streaming &amp; Cable TV</span><h3 data-i18n="mk.1.h">Thousands of hours, all needing music.</h3><p data-i18n="mk.1.p">Every series, every film, every channel needs original scoring and sound-branding. We compose it, at the volume and speed Peruvian broadcast actually moves.</p></div>
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.5.tag">Film &amp; Advertising</span><h3 data-i18n="mk.5.h">A score on screen, a logo at the shelf.</h3><p data-i18n="mk.5.p">National films and brand campaigns need original scores and sonic logos. We give each one a sound it owns, in the cinema and at the point of sale.</p></div>
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.2.tag">Video Games</span><h3 data-i18n="mk.2.h">Dozens of studios, still scoring with stock.</h3><p data-i18n="mk.2.p">Local studios need original adaptive scores, stingers, and sound design built for play. We replace fragmented freelancers and generic overseas tracks with one studio that knows the medium.</p></div>
+      <div class="card mk reveal"><span class="tagline" data-i18n="mk.6.tag">ADR &amp; Dubbing</span><h3 data-i18n="mk.6.h">More than dubbed voices.</h3><p data-i18n="mk.6.p">When foreign series are repackaged for Latin America, they need adapted, original scoring, not just localized dialogue. We compose the music that makes a story travel.</p></div>
+    </div>
+  </section>
+
+  <!-- STADIUM BANNER (full-width) -->
+  <section class="banner reveal" id="banner2" aria-label="A packed stadium in Lima, Perú">
+    <img src="assets/img/stadium_Wide.jpg" alt="A packed football stadium at dusk in Lima, Perú">
+  </section>
+
+  <!-- CTA -->
+  <section class="wrap section cta reveal" id="contact">
+    <p class="eyebrow" style="margin-bottom:24px" data-i18n="cta.eyebrow">Commission</p>
+    <h2 data-i18n="cta.h">Peru already has a voice.<br><span class="red">We carry it to the summit.</span></h2>
+    <p class="sub" data-i18n="cta.sub">Reach out to the house that writes original sound and keeps what it earns. Tell us what needs music.</p>
+    <div class="ctaform">
+      <input id="ctaInput" type="email" placeholder="Your email" aria-label="Your email" data-i18n-ph="cta.ph" />
+      <button id="ctaBtn" type="button"><span data-i18n="cta.btn">Get in touch</span>
+        <svg width="20" height="13" viewBox="0 0 22 14" fill="none" aria-hidden="true"><path d="M0 7h20M14 1l6 6-6 6" stroke="currentColor" stroke-width="1.2"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <div>
+          <div class="foot-brand"><img class="logo-mb" src="assets/img/apusonic-logo.png" alt="Apusonic"></div>
+          <p class="apu" data-i18n="foot.apu"><em>Apu</em>, the living spirit of a mountain. A sonic origination and rights house in Lima, Perú.</p>
+        </div>
+        <div class="fcol"><h5 data-i18n="foot.col1">Services</h5>
+          <a href="#services" data-i18n="foot.s1">Composition &amp; Sonic DNA</a><a href="#services" data-i18n="foot.s2">Rights &amp; Monetization</a><a href="#services" data-i18n="foot.s3">Sonic Branding</a><a href="#services" data-i18n="foot.s4">ADR &amp; Localized Scoring</a><a href="#services" data-i18n="foot.s5">Adaptive Game Score</a>
+        </div>
+        <div class="fcol"><h5 data-i18n="foot.col2">Solutions</h5>
+          <a href="#markets" data-i18n="foot.sol1">Streaming &amp; Cable TV</a><a href="#markets" data-i18n="foot.sol2">Video Games</a><a href="#markets" data-i18n="foot.sol3">Stadiums &amp; Clubs</a><a href="#markets" data-i18n="foot.sol4">Government &amp; Institutions</a><a href="#markets" data-i18n="foot.sol5">Film &amp; Advertising</a>
+        </div>
+        <div class="fcol"><h5 data-i18n="foot.col3">Company</h5>
+          <a href="#contact" data-i18n="foot.c1">Contact</a><a href="mailto:hola@apusonic.pe">hola@apusonic.pe</a><a href="#top" data-i18n="foot.c3">Lima, Perú</a>
+        </div>
+      </div>
+      <div class="foot-bot"><span data-i18n="foot.copy">&copy; 2026 Apusonic</span><span data-i18n="foot.reg">Registered with APDAYC · Lima, Perú</span></div>
+    </div>
+  </footer>
+
+  </div><!-- /#site -->
+</main>
+
+<!-- Three.js from CDN (single script tag, no build step). main.js falls back to a 2D layered hero if THREE or WebGL is unavailable. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

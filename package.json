@@ -1,0 +1,10 @@
+{
+  "name": "apusonic",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Apusonic concept website — static HTML/CSS/JS with a WebGL hero (Three.js via CDN)",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "serve": "npx serve ."
+  }
+}
