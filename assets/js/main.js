@@ -152,10 +152,11 @@
   function buildHeroCanvas(){
     if(!canvas||!canvas.getContext) return;
     var ctx=canvas.getContext('2d'), W=0,H=0,DPR=1;
-    var LAYERS=7, PTS=180, profs=[], t0=performance.now();
+    var LAYERS=5, PTS=160, profs=[], t0=performance.now();
     for(var i=0;i<LAYERS;i++){
-      profs.push(ridgeProfile(11+i*17.3, 4, 1.9+i*0.35, 1.6+0.5*(i/LAYERS), PTS));
+      profs.push(ridgeProfile(11+i*17.3, 3, 1.6+i*0.3, 1.5+0.4*(i/LAYERS), PTS));
     }
+    var signal=ridgeProfile(51.7, 3, 2.8, 1.2, PTS);   /* the red line's own gentle contour */
     function size(){
       DPR=Math.min(window.devicePixelRatio||1,2);
       W=hero.clientWidth; H=hero.clientHeight;
@@ -167,9 +168,8 @@
     window.addEventListener('resize',size,{passive:true});
 
     /* far -> near: each layer fills to the bottom in near-bg so it occludes
-       the layers behind it — waveform lines that read as a mountain range */
-    var fills=['#17181C','#15161A','#141518','#121316','#101114','#0E0E10','#0C0B0A'];
-    function strokeAlpha(i){ return 0.10 + (i/(LAYERS-1))*0.30; }
+       the layers behind it. Silhouettes stay calm; only their rim is lit. */
+    var fills=['#17181C','#141518','#111215','#0E0F11','#0C0B0A'];
 
     function draw(now){
       var t=(now-t0)/1000;
@@ -181,37 +181,57 @@
       for(var i=0;i<LAYERS;i++){
         var ni=i/(LAYERS-1);                       /* 0 far .. 1 near */
         var prof=profs[i];
-        var baseY=H*(0.46+0.50*Math.pow(ni,1.25)) + scrollP*H*0.22*ni; /* near layers sink as you scroll */
-        var ampR=H*lerp(0.06,0.20,ni);             /* ridge height */
-        var ampW=H*lerp(0.004,0.016,ni);           /* oscillation */
-        var speed=lerp(0.14,0.5,ni);
-        var par=mx*lerp(6,42,ni);                  /* cursor parallax, px */
+        var baseY=H*(0.52+0.44*Math.pow(ni,1.3));
+        var ampR=H*lerp(0.07,0.19,ni);             /* ridge height */
+        var breathe=1+0.025*Math.sin(t*0.4+i*1.9); /* slow amplitude breathing — no squiggle */
+        /* parallax: whole-layer translate. Far layers LAG the scroll (drift down
+           relative to the page), near layers ride with it — depth that agrees
+           with the scroll direction. Cursor drift is a plain offset too. */
+        var dx=mx*lerp(5,26,ni);
+        var dy=scrollP*H*0.30*(1-ni) + my*lerp(2,9,ni);
 
+        ctx.save();
+        ctx.translate(dx,dy);
         ctx.beginPath();
-        ctx.moveTo(-4,H+4);
+        ctx.moveTo(-48,H+48);
         for(var p=0;p<=PTS;p++){
-          var x=(p/PTS)*W;
-          var sx=p/PTS;
-          /* audio: map bands across the width, weighted toward the center */
+          var sx=p/PTS, x=-48+sx*(W+96);
+          /* audio lifts the near crests, fading at the edges */
           var b=bands[Math.floor(sx*63)]||0;
-          var win=Math.sin(sx*Math.PI);                       /* fade audio at the edges */
-          var osc=Math.sin(sx*14+t*speed*2.2+i*1.7)*ampW*(1+my*0.35)
-                 +Math.sin(sx*33-t*speed*3.1+i*0.9)*ampW*0.45;
-          var audio=b*win*H*lerp(0.015,0.075,ni);
-          var y=baseY - prof[p]*ampR - osc - audio;
-          ctx.lineTo(x+par*(sx-0.5)*0.3+ (p===0?-4:0), y);
+          var audio=b*Math.sin(sx*Math.PI)*H*lerp(0.008,0.05,ni);
+          ctx.lineTo(x, baseY - prof[p]*ampR*breathe - audio);
         }
-        ctx.lineTo(W+4,H+4);
+        ctx.lineTo(W+48,H+48);
         ctx.closePath();
         ctx.fillStyle=fills[i]||fills[fills.length-1];
         ctx.fill();
-        /* crest line: warm white, one red signal line mid-field */
-        ctx.lineWidth=(i===4)?1.4:1;
-        ctx.strokeStyle=(i===4)
-          ? 'rgba(225,29,60,'+(0.55+bands[24]*0.45)+')'
-          : 'rgba(244,241,234,'+strokeAlpha(i)+')';
-        ctx.stroke();
+        /* faint rim light on the two nearest crests only — keeps the field clean */
+        if(i>=LAYERS-2){
+          ctx.lineWidth=1;
+          ctx.strokeStyle='rgba(244,241,234,'+(i===LAYERS-1?0.22:0.10)+')';
+          ctx.stroke();
+        }
+        ctx.restore();
       }
+
+      /* THE signal — one red waveform flowing through the mid-range.
+         The only element that truly moves; everything else just breathes. */
+      var sy=H*0.66 + scrollP*H*0.12 + my*6;
+      var live=0.5+(bands[20]||0)*0.5;
+      ctx.save();
+      ctx.translate(mx*16,0);
+      ctx.beginPath();
+      for(var q=0;q<=PTS;q++){
+        var qx=q/PTS, x2=-48+qx*(W+96);
+        var b2=bands[Math.floor(qx*63)]||0;
+        var wave=Math.sin(qx*9-t*0.9)*H*0.012 + Math.sin(qx*23+t*0.6)*H*0.005;
+        var y2=sy - signal[q]*H*0.05 - wave - b2*Math.sin(qx*Math.PI)*H*0.06;
+        q===0?ctx.moveTo(x2,y2):ctx.lineTo(x2,y2);
+      }
+      ctx.lineWidth=1.4;
+      ctx.strokeStyle='rgba(225,29,60,'+(0.45+live*0.4)+')';
+      ctx.stroke();
+      ctx.restore();
     }
 
     if(reduce){ draw(t0+1); return; }   /* one static frame under reduced motion */
