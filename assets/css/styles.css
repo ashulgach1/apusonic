@@ -310,3 +310,32 @@ footer{border-top:1px solid var(--line);padding-block:clamp(56px,8vh,96px) 46px;
 html:not(.js) .reveal{opacity:1;transform:none}
 
 :focus-visible{outline:2px solid var(--red);outline-offset:4px;border-radius:2px}
+
+/* ---------------- private-preview gate ---------------- */
+/* shown by default (blocks even with JS off); removed once unlocked */
+html:not(.unlocked),html:not(.unlocked) body{overflow:hidden}
+.unlocked .gate{display:none}
+.gate{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;
+  padding:var(--pad);text-align:center;
+  background:radial-gradient(120% 90% at 50% -10%,#1A1A1E 0%,var(--bg) 60%)}
+.gate[hidden]{display:none}
+.gate-inner{max-width:400px;width:100%;animation:gateIn 1s var(--ease) both}
+@keyframes gateIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.gate-tri{display:block;color:var(--red);font-size:17px;margin-bottom:24px;
+  animation:pulse 1.4s ease-in-out infinite}
+.gate-brand{font-weight:300;letter-spacing:.42em;font-size:15px;text-indent:.42em;margin-bottom:24px}
+.gate-note{color:var(--soft);font-size:13px;letter-spacing:.02em;line-height:1.6;margin-bottom:34px}
+.gate-form{display:flex;align-items:center;border-bottom:1px solid var(--line-strong);transition:border-color .35s ease}
+.gate-form:focus-within{border-color:var(--red)}
+.gate-form input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font-family:var(--display);
+  font-weight:300;font-size:16px;letter-spacing:.14em;padding:15px 4px;text-align:center}
+.gate-form input:focus{outline:none}
+.gate-form input::placeholder{color:var(--soft);letter-spacing:.04em}
+.gate-form button{background:none;border:0;color:var(--red);cursor:pointer;padding:0 6px;display:inline-flex;
+  align-items:center;transition:transform .3s var(--ease)}
+.gate-form button:hover{transform:translateX(3px)}
+.gate-err{min-height:16px;margin-top:18px;color:var(--red);font-size:12px;letter-spacing:.08em}
+.gate.shake .gate-inner{animation:gateShake .45s}
+@keyframes gateShake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}
+  30%,50%,70%{transform:translateX(-8px)}40%,60%{transform:translateX(8px)}}
+@media (prefers-reduced-motion:reduce){.gate-inner,.gate.shake .gate-inner,.gate-tri{animation:none}}
