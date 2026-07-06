@@ -192,7 +192,11 @@
 
   var SUP = ['en','es','pt'];
   var lang = 'en';
-  try { var saved = localStorage.getItem('apus-lang'); if (saved && SUP.indexOf(saved) >= 0) lang = saved; } catch(e){}
+  try {
+    var saved = localStorage.getItem('apus-lang');
+    if (saved && SUP.indexOf(saved) >= 0) { lang = saved; }
+    else if (/\.pe$/.test(location.hostname)) { lang = 'es'; }  /* apusonic.pe is the Peru site — default to Spanish */
+  } catch(e){}
 
   function apply(l){
     var d = DICT[l] || DICT.en;
