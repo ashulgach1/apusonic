@@ -1,464 +1,358 @@
-/* Apusonic — main.js
-   Hero: a clear-day Andean summit. WebGL (Three.js, CDN) when available —
-   twelve noise-generated ridge planes at staggered depths with atmospheric
-   haze, drifting cloud banks, a hazy high sun, and a scroll-driven camera
-   that descends through the ranges. Falls back to a 2D layered parallax hero,
-   and to a clean static layered scene under prefers-reduced-motion. */
+/* Apusonic — alt-cumbre main.js
+   One idea holds the page: the ridge line is the waveform.
+   The hero canvas draws layered Andean silhouettes whose crests oscillate
+   like an audio signal — driven by time, cursor, scroll, and (once the
+   visitor presses Listen) a real Web Audio analyser. No libraries. */
 (function(){
   document.documentElement.classList.add('js');
   var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-  /* ============================================================
-     Shared ridge math (smoothed value-noise — same family as v1)
-     ============================================================ */
+  function clamp01(v){ return Math.min(1,Math.max(0,v)); }
+  function lerp(a,b,t){ return a+(b-a)*t; }
+
+  /* smoothed value noise — the same family the ridge profiles have always used */
   function noiseFn(seed){
     function r(i){ var x=Math.sin(i*12.9898+seed*78.233)*43758.5453; return x-Math.floor(x); }
     return function(x){ var i=Math.floor(x),f=x-i,u=f*f*(3-2*f); return r(i)*(1-u)+r(i+1)*u; };
   }
-  /* normalized ridge profile: array of N+1 heights in [0..1], pointed summits */
-  function ridgeProfile(seed,octaves,freq,sharp,smooth,N){
-    var noise=noiseFn(seed), raw=[];
+  /* pointed ridge profile, N+1 samples in [0..1] */
+  function ridgeProfile(seed,octaves,freq,sharp,N){
+    var noise=noiseFn(seed), out=[];
     for(var i=0;i<=N;i++){
       var x=i/N,v=0,a=0.5,amp=0,f=freq;
       for(var k=0;k<octaves;k++){ var n=noise(x*f+seed*1.7); n=1-Math.abs(2*n-1); v+=a*n; amp+=a; f*=1.9; a*=0.5; }
-      raw.push(v/amp);
+      out.push(v/amp);
     }
-    for(var pass=0;pass<(smooth||1);pass++){
-      var sm=[];
-      for(var j=0;j<=N;j++){
-        var p0=raw[Math.max(0,j-1)],p1=raw[j],p2=raw[Math.min(N,j+1)];
-        sm[j]=p0*0.2+p1*0.6+p2*0.2;
-      }
-      raw=sm;
-    }
-    var mx=Math.max.apply(null,raw),mn=Math.min.apply(null,raw),rng=(mx-mn)||1;
-    for(var m=0;m<=N;m++){ raw[m]=Math.pow((raw[m]-mn)/rng, sharp||1); }
-    return raw;
+    var mx=Math.max.apply(null,out),mn=Math.min.apply(null,out),rng=(mx-mn)||1;
+    for(var m=0;m<=N;m++){ out[m]=Math.pow((out[m]-mn)/rng, sharp||1); }
+    return out;
   }
-  function lerp(a,b,t){ return a+(b-a)*t; }
-  function clamp01(v){ return Math.min(1,Math.max(0,v)); }
-  function easeInOut(t){ return t*t*(3-2*t); }
-  /* hex color lerp -> css string */
-  function hexToRgb(h){ var n=parseInt(h.slice(1),16); return [n>>16&255,n>>8&255,n&255]; }
-  function mixHex(a,b,t){
-    var A=hexToRgb(a),B=hexToRgb(b);
-    return 'rgb('+Math.round(lerp(A[0],B[0],t))+','+Math.round(lerp(A[1],B[1],t))+','+Math.round(lerp(A[2],B[2],t))+')';
-  }
-
-  /* depth palette: far pale-blue haze -> near daylit slate (atmospheric perspective) */
-  var FAR_COL='#AFC6D8', NEAR_COL='#5C6873';   /* medium slate — defined, and it IS the grey the definition lands on */
-  function depthColor(t){ return mixHex(NEAR_COL, FAR_COL, Math.pow(t,0.62)); }
 
   /* ============================================================
-     Starfield (shared by all hero modes) — one generated tile
+     AUDIO — a generative Andean loop + analyser for the canvas.
+     Nothing plays until the visitor asks for it.
      ============================================================ */
-  (function stars(){
-    var el=document.getElementById('stars'); if(!el) return;
-    var c=document.createElement('canvas'); c.width=900; c.height=420;
-    var ctx=c.getContext('2d');
-    var rnd=noiseFn(3.7);
-    for(var i=0;i<150;i++){
-      var x=rnd(i*1.31)*900, y=Math.pow(rnd(i*2.17),1.6)*420,
-          r=0.4+rnd(i*3.03)*0.9, a=0.25+rnd(i*4.41)*0.6;
-      ctx.beginPath(); ctx.arc(x,y,r,0,6.2832);
-      ctx.fillStyle='rgba(235,238,248,'+a.toFixed(2)+')'; ctx.fill();
+  var actx=null, master=null, analyser=null, fftData=null, playing=false, schedTimer=null;
+  var SCALE=[220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33]; /* A minor pentatonic-ish ladder */
+
+  function ensureCtx(){
+    if(!actx){
+      actx=new (window.AudioContext||window.webkitAudioContext)();
+      master=actx.createGain(); master.gain.value=0;
+      analyser=actx.createAnalyser(); analyser.fftSize=256; analyser.smoothingTimeConstant=0.82;
+      fftData=new Uint8Array(analyser.frequencyBinCount);
+      /* master -> soft delay (space) -> analyser -> out */
+      var delay=actx.createDelay(1.2); delay.delayTime.value=0.42;
+      var fb=actx.createGain(); fb.gain.value=0.34;
+      var wet=actx.createGain(); wet.gain.value=0.38;
+      master.connect(analyser);
+      master.connect(delay); delay.connect(fb); fb.connect(delay);
+      delay.connect(wet); wet.connect(analyser);
+      analyser.connect(actx.destination);
     }
-    el.style.backgroundImage='url('+c.toDataURL()+')';
-    el.style.backgroundSize='900px 420px';
+    if(actx.state==='suspended') actx.resume();
+    return actx;
+  }
+  function pluck(freq,when,dur,peak,type){
+    var o=actx.createOscillator(),o2=actx.createOscillator(),g=actx.createGain(),g2=actx.createGain();
+    o.type=type||'triangle'; o2.type='sine';
+    o.frequency.value=freq; o2.frequency.value=freq*2.002; g2.gain.value=0.14;
+    g.gain.setValueAtTime(0.0001,when);
+    g.gain.exponentialRampToValueAtTime(peak,when+0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,when+dur);
+    o.connect(g); o2.connect(g2); g2.connect(g); g.connect(master);
+    o.start(when); o2.start(when); o.stop(when+dur+0.06); o2.stop(when+dur+0.06);
+  }
+  var droneNodes=[];
+  function startDrone(){
+    [[55,'sine',0.055],[110,'sine',0.045],[110.4,'sine',0.028]].forEach(function(d){
+      var o=actx.createOscillator(),g=actx.createGain();
+      o.type=d[1]; o.frequency.value=d[0]; g.gain.value=d[2];
+      o.connect(g); g.connect(master); o.start();
+      droneNodes.push({o:o,g:g});
+    });
+  }
+  var step=0;
+  function schedule(){
+    /* look ahead and lay down sparse pentatonic plucks over the drone */
+    var t=actx.currentTime+0.08;
+    if(step%2===0){
+      var idx=Math.floor(Math.random()*SCALE.length);
+      /* favor steps downward — the melody descends like the range */
+      if(Math.random()<0.6) idx=Math.max(0,idx-1);
+      pluck(SCALE[idx], t, 1.6, 0.11, 'triangle');
+      if(Math.random()<0.3) pluck(SCALE[idx]*2, t+0.22, 1.1, 0.05, 'sine');
+    }
+    if(step%8===0) pluck(SCALE[0]/2, t, 3.2, 0.09, 'sine');
+    step++;
+  }
+  function startSound(){
+    ensureCtx();
+    playing=true; step=0;
+    startDrone();
+    master.gain.cancelScheduledValues(actx.currentTime);
+    master.gain.setTargetAtTime(0.9, actx.currentTime, 0.6);
+    schedule();
+    schedTimer=setInterval(schedule, 620);
+    document.body.classList.add('playing');
+    setLabels();
+  }
+  function stopSound(){
+    playing=false;
+    clearInterval(schedTimer);
+    if(master){ master.gain.setTargetAtTime(0.0001, actx.currentTime, 0.35); }
+    setTimeout(function(){
+      droneNodes.forEach(function(n){ try{ n.o.stop(); }catch(e){} });
+      droneNodes=[];
+    }, 900);
+    document.body.classList.remove('playing');
+    setLabels();
+  }
+  function toggleSound(){ playing ? stopSound() : startSound(); }
+
+  var T=function(k,f){ return window.apusT ? (window.apusT(k)||f) : f; };
+  var stBtn=document.getElementById('soundToggle'),
+      stText=document.getElementById('stText'),
+      heroListen=document.getElementById('heroListen');
+  function setLabels(){
+    if(stText) stText.textContent = playing ? T('sound.playing','Playing') : T('sound.idle','Listen');
+    if(stBtn) stBtn.setAttribute('aria-pressed', playing?'true':'false');
+  }
+  if(stBtn) stBtn.addEventListener('click', toggleSound);
+  if(heroListen) heroListen.addEventListener('click', toggleSound);
+
+  /* audio level for the canvas: 0 when silent, smoothed FFT bands while playing */
+  var bandCache=new Float32Array(64);
+  function audioBands(){
+    if(!playing||!analyser) {
+      for(var z=0;z<64;z++) bandCache[z]*=0.94;   /* decay gracefully after stop */
+      return bandCache;
+    }
+    analyser.getByteFrequencyData(fftData);
+    for(var i=0;i<64;i++){
+      var v=(fftData[i+2]||0)/255;
+      bandCache[i]=Math.max(v, bandCache[i]*0.9);
+    }
+    return bandCache;
+  }
+
+  /* ============================================================
+     HERO CANVAS — layered ridge-waveforms
+     ============================================================ */
+  var hero=document.getElementById('hero'),
+      canvas=document.getElementById('wavecanvas');
+  var mxT=0,myT=0,mx=0,my=0;
+  if(!reduce){
+    window.addEventListener('mousemove',function(e){
+      mxT=(e.clientX/window.innerWidth)*2-1;
+      myT=(e.clientY/window.innerHeight)*2-1;
+    },{passive:true});
+  }
+
+  function buildHeroCanvas(){
+    if(!canvas||!canvas.getContext) return;
+    var ctx=canvas.getContext('2d'), W=0,H=0,DPR=1;
+    var LAYERS=7, PTS=180, profs=[], t0=performance.now();
+    for(var i=0;i<LAYERS;i++){
+      profs.push(ridgeProfile(11+i*17.3, 4, 1.9+i*0.35, 1.6+0.5*(i/LAYERS), PTS));
+    }
+    function size(){
+      DPR=Math.min(window.devicePixelRatio||1,2);
+      W=hero.clientWidth; H=hero.clientHeight;
+      canvas.width=W*DPR; canvas.height=H*DPR;
+      canvas.style.width=W+'px'; canvas.style.height=H+'px';
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    }
+    size();
+    window.addEventListener('resize',size,{passive:true});
+
+    /* far -> near: each layer fills to the bottom in near-bg so it occludes
+       the layers behind it — waveform lines that read as a mountain range */
+    var fills=['#17181C','#15161A','#141518','#121316','#101114','#0E0E10','#0C0B0A'];
+    function strokeAlpha(i){ return 0.10 + (i/(LAYERS-1))*0.30; }
+
+    function draw(now){
+      var t=(now-t0)/1000;
+      mx+=(mxT-mx)*0.04; my+=(myT-my)*0.04;
+      var bands=audioBands();
+      var scrollP=clamp01(window.scrollY/Math.max(1,H));
+      ctx.clearRect(0,0,W,H);
+
+      for(var i=0;i<LAYERS;i++){
+        var ni=i/(LAYERS-1);                       /* 0 far .. 1 near */
+        var prof=profs[i];
+        var baseY=H*(0.46+0.50*Math.pow(ni,1.25)) + scrollP*H*0.22*ni; /* near layers sink as you scroll */
+        var ampR=H*lerp(0.06,0.20,ni);             /* ridge height */
+        var ampW=H*lerp(0.004,0.016,ni);           /* oscillation */
+        var speed=lerp(0.14,0.5,ni);
+        var par=mx*lerp(6,42,ni);                  /* cursor parallax, px */
+
+        ctx.beginPath();
+        ctx.moveTo(-4,H+4);
+        for(var p=0;p<=PTS;p++){
+          var x=(p/PTS)*W;
+          var sx=p/PTS;
+          /* audio: map bands across the width, weighted toward the center */
+          var b=bands[Math.floor(sx*63)]||0;
+          var win=Math.sin(sx*Math.PI);                       /* fade audio at the edges */
+          var osc=Math.sin(sx*14+t*speed*2.2+i*1.7)*ampW*(1+my*0.35)
+                 +Math.sin(sx*33-t*speed*3.1+i*0.9)*ampW*0.45;
+          var audio=b*win*H*lerp(0.015,0.075,ni);
+          var y=baseY - prof[p]*ampR - osc - audio;
+          ctx.lineTo(x+par*(sx-0.5)*0.3+ (p===0?-4:0), y);
+        }
+        ctx.lineTo(W+4,H+4);
+        ctx.closePath();
+        ctx.fillStyle=fills[i]||fills[fills.length-1];
+        ctx.fill();
+        /* crest line: warm white, one red signal line mid-field */
+        ctx.lineWidth=(i===4)?1.4:1;
+        ctx.strokeStyle=(i===4)
+          ? 'rgba(225,29,60,'+(0.55+bands[24]*0.45)+')'
+          : 'rgba(244,241,234,'+strokeAlpha(i)+')';
+        ctx.stroke();
+      }
+    }
+
+    if(reduce){ draw(t0+1); return; }   /* one static frame under reduced motion */
+    (function loop(now){
+      requestAnimationFrame(loop);
+      if(document.hidden) return;
+      if(window.scrollY>H*1.15 && !playing) return;  /* hero off-screen and silent — rest */
+      draw(now||performance.now());
+    })(t0);
+  }
+  buildHeroCanvas();
+
+  /* CTA canvas — a single quiet signal line */
+  (function(){
+    var band=document.querySelector('.cta-band'), c=document.getElementById('ctacanvas');
+    if(!band||!c||!c.getContext) return;
+    var ctx=c.getContext('2d'),W=0,H=0,DPR=1,t0=performance.now();
+    var prof=ridgeProfile(83.2,3,2.4,1.4,140);
+    function size(){ DPR=Math.min(window.devicePixelRatio||1,2);
+      W=band.clientWidth; H=band.clientHeight;
+      c.width=W*DPR; c.height=H*DPR; c.style.width=W+'px'; c.style.height=H+'px';
+      ctx.setTransform(DPR,0,0,DPR,0,0); }
+    size(); window.addEventListener('resize',size,{passive:true});
+    function draw(now){
+      var t=(now-t0)/1000, bands=audioBands();
+      ctx.clearRect(0,0,W,H);
+      ctx.beginPath();
+      for(var p=0;p<=140;p++){
+        var sx=p/140, x=sx*W;
+        var b=(bands[Math.floor(sx*63)]||0)*Math.sin(sx*Math.PI);
+        var y=H*0.82 - prof[p]*H*0.06 - Math.sin(sx*11+t*0.5)*H*0.008 - b*H*0.05;
+        p===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+      }
+      ctx.lineWidth=1; ctx.strokeStyle='rgba(244,241,234,.16)'; ctx.stroke();
+    }
+    if(reduce){ draw(t0+1); return; }
+    (function loop(now){
+      requestAnimationFrame(loop);
+      if(document.hidden) return;
+      var r=band.getBoundingClientRect();
+      if(r.bottom<0||r.top>window.innerHeight) return;
+      draw(now||performance.now());
+    })(t0);
   })();
 
   /* ============================================================
-     HERO ENGINE
+     Load veil
      ============================================================ */
-  var hero=document.getElementById('hero'),
-      stage=document.getElementById('heroStage'),
-      site=document.getElementById('site'),
-      whiteout=document.getElementById('whiteout'),
-      canvas=document.getElementById('glcanvas'),
-      hdr=document.getElementById('hdr'),
-      ranges=document.getElementById('ranges');
-
-  /* intro progress: 0 at the top, 1 once the site content has scrolled fully into view.
-     The hero stage is a FIXED full-viewport layer; .hero is just a scroll spacer behind it. */
-  var heroH=hero.offsetHeight;
-  window.addEventListener('resize',function(){ heroH=hero.offsetHeight; },{passive:true});
-  function heroProgress(){
-    return clamp01(window.scrollY / Math.max(1, heroH));
-  }
-
-  /* pointer / tilt parallax target, shared by both renderers */
-  var mxT=0,myT=0;
-  if(!reduce){
-    var pmTick=false;
-    window.addEventListener('mousemove',function(e){
-      if(pmTick) return; pmTick=true;
-      requestAnimationFrame(function(){
-        mxT=(e.clientX/window.innerWidth)*2-1;
-        myT=(e.clientY/window.innerHeight)*2-1;
-        pmTick=false;
-      });
-    },{passive:true});
-    if('ontouchstart' in window){
-      window.addEventListener('deviceorientation',function(e){
-        if(e.gamma==null||e.beta==null) return;
-        mxT=Math.max(-1,Math.min(1,e.gamma/28));
-        myT=Math.max(-1,Math.min(1,(e.beta-45)/40));
-      },true);
-    }
-  }
-
-  /* ---------- WebGL diorama ---------- */
-  function buildGL(){
-    if(reduce || typeof THREE==='undefined') return false;
-    var renderer;
-    try{
-      renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true,powerPreference:'high-performance'});
-    }catch(e){ return false; }
-    if(!renderer.getContext()) return false;
-
-    /* tunables — the whole scene in one place */
-    var CFG={
-      layers:18, spacing:15, firstZ:-22, width:660, points:260,
-      ampBase:16.0, ampStep:3.5,                    /* lower ridge peaks — they sit well below the giant Apu */
-      camStart:{y:26.0,z:30}, camEnd:{y:-40.0,z:20}, /* VERTICAL descent: lower start so more grey foreground */
-      fogWarm:0xCBD9E6, fogCool:0xE7EFF5, fogNear:150, fogFar:470,
-      moteCount:0, mistCount:11
-    };
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5)); /* cap DPR — less overdraw on the layered ridges */
-    var scene=new THREE.Scene();
-    scene.fog=new THREE.Fog(CFG.fogWarm,CFG.fogNear,CFG.fogFar);
-    var cam=new THREE.PerspectiveCamera(47,1,1,6000);  /* tighter FOV; deep far plane so the sun sits way back */
-
-    /* ridge cutouts at staggered depths — vertex-shaded with snow on the summits */
-    var ridges=[], WHITE=new THREE.Color(0xffffff);
-    for(var i=0;i<CFG.layers;i++){
-      var t=i/(CFG.layers-1);                                /* 0 near .. 1 far */
-      var prof=ridgeProfile(7+i*13.7, 4, 2.2+i*0.24, 2.6+1.0*(1-t), i>8?2:1, CFG.points);
-      var amp=CFG.ampBase+i*CFG.ampStep, base=-3+i*0.82; /* far ridges rise higher in frame (more peaks behind the logo) */
-      var shape=new THREE.Shape();
-      shape.moveTo(-CFG.width/2,-110);                      /* extend far below the camera's lowest point — never empty under the ridges */
-      for(var p=0;p<=CFG.points;p++){
-        shape.lineTo(-CFG.width/2+(p/CFG.points)*CFG.width, base+prof[p]*amp);
-      }
-      shape.lineTo(CFG.width/2,-110);
-      shape.closePath();
-      var geo=new THREE.ShapeGeometry(shape,1), pa=geo.attributes.position;
-      var rock=new THREE.Color(depthColor(t)), snow=rock.clone().lerp(WHITE,0.78), tmp=new THREE.Color();
-      var cols=new Float32Array(pa.count*3);
-      for(var v=0;v<pa.count;v++){
-        var ty=clamp01((pa.getY(v)-base)/(amp||1));           /* 0 at base .. 1 at the peak */
-        var snowMix=Math.pow(clamp01((ty-0.6)/0.4),1.4);      /* snow only near the summits */
-        var shade=lerp(0.86,1.0,clamp01(ty*1.4));             /* shaded bodies, lit tops (lifted floor) */
-        tmp.copy(rock).lerp(snow,snowMix);
-        cols[v*3]=tmp.r*shade; cols[v*3+1]=tmp.g*shade; cols[v*3+2]=tmp.b*shade;
-      }
-      geo.setAttribute('color',new THREE.BufferAttribute(cols,3));
-      var mat=new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:1,side:THREE.DoubleSide});
-      var mesh=new THREE.Mesh(geo,mat);
-      mesh.position.z=CFG.firstZ-i*CFG.spacing;
-      scene.add(mesh);
-      ridges.push(mesh);
-    }
-
-    /* THE APU — one colossal snow-capped peak, dead centre, far in the distance: the brand's mountain */
-    (function(){
-      var AW=410, AH=176, APTS=300, ah=AW/2;
-      var anoise=ridgeProfile(123.7, 5, 2.6, 2.5, 2, APTS);     /* finer, more rugged texture on the flanks */
-      var afine=ridgeProfile(57.3, 4, 3.4, 4.6, 2, APTS);       /* small-scale crags layered on top */
-      var ash=new THREE.Shape();
-      ash.moveTo(-ah,-120);
-      for(var ap=0;ap<=APTS;ap++){
-        var ax=ap/APTS, d=Math.abs(ax-0.5)*2;                   /* 0 at centre .. 1 at edges */
-        var peak=Math.pow(Math.max(0,1-d),1.08);                /* sharp summit, broad base (near-triangular) */
-        var rug=0.74+0.20*anoise[ap]+0.06*afine[ap];            /* layered ridges + fine crags */
-        ash.lineTo(-ah+ax*AW, -8 + peak*AH*rug);
-      }
-      ash.lineTo(ah,-120); ash.closePath();
-      var ageo=new THREE.ShapeGeometry(ash,1), apa=ageo.attributes.position;
-      var arock=new THREE.Color('#7E9CB8'), asnow=new THREE.Color('#FBFDFF'), atc=new THREE.Color();
-      var acol=new Float32Array(apa.count*3);
-      for(var av=0;av<apa.count;av++){
-        var aty=clamp01((apa.getY(av)+8)/AH);                    /* 0 base .. 1 summit */
-        var asnowMix=Math.pow(clamp01((aty-0.30)/0.70),1.1);    /* heavy snow up high */
-        var ashade=lerp(0.9,1.0,clamp01(aty*1.2));
-        atc.copy(arock).lerp(asnow,asnowMix);
-        acol[av*3]=atc.r*ashade; acol[av*3+1]=atc.g*ashade; acol[av*3+2]=atc.b*ashade;
-      }
-      ageo.setAttribute('color',new THREE.BufferAttribute(acol,3));
-      var amesh=new THREE.Mesh(ageo, new THREE.MeshBasicMaterial({vertexColors:true,transparent:true,opacity:1,side:THREE.DoubleSide,fog:false}));
-      amesh.position.set(0,0, CFG.firstZ - CFG.layers*CFG.spacing - 30);  /* behind every ridge, dead centre */
-      amesh.renderOrder=-1;                                       /* drawn first, behind the ranges */
-      scene.add(amesh);
-    })();
-
-    /* THE SUN — a real body far back in the scene (millions of miles away): bright, and barely parallaxes */
-    (function(){
-      var c=document.createElement('canvas'); c.width=c.height=256;
-      var x=c.getContext('2d'), g=x.createRadialGradient(128,128,0,128,128,128);
-      g.addColorStop(0.00,'rgba(255,255,253,1)');
-      g.addColorStop(0.11,'rgba(255,254,246,1)');
-      g.addColorStop(0.18,'rgba(255,249,228,0.95)');
-      g.addColorStop(0.32,'rgba(255,241,205,0.42)');
-      g.addColorStop(0.58,'rgba(255,237,196,0.13)');
-      g.addColorStop(1.00,'rgba(255,237,196,0)');
-      x.fillStyle=g; x.fillRect(0,0,256,256);
-      var sun=new THREE.Sprite(new THREE.SpriteMaterial({
-        map:new THREE.CanvasTexture(c), transparent:true, depthWrite:false, depthTest:false, fog:false, opacity:1}));
-      sun.scale.set(1900,1900,1);
-      sun.position.set(-1120, 820, -2700);                        /* high upper-LEFT, far in the distance */
-      sun.renderOrder=-2;
-      scene.add(sun);
-    })();
-
-    /* soft radial sprite texture (mist + ember share it) */
-    function glowTex(rgb){
-      var c=document.createElement('canvas'); c.width=c.height=256;
-      var x=c.getContext('2d'),g=x.createRadialGradient(128,128,8,128,128,128);
-      g.addColorStop(0,'rgba('+rgb+',0.85)'); g.addColorStop(0.45,'rgba('+rgb+',0.28)'); g.addColorStop(1,'rgba('+rgb+',0)');
-      x.fillStyle=g; x.fillRect(0,0,256,256);
-      var tx=new THREE.CanvasTexture(c); return tx;
-    }
-
-    /* high clouds drifting across the upper sky (visible — no fog) */
-    var mistTex=glowTex('248,251,255'),mists=[],cN=noiseFn(9);
-    for(var mI=0;mI<CFG.mistCount;mI++){
-      var w=130+cN(mI*1.7)*170, op=0.48+cN(mI*2.9)*0.30;
-      var mm=new THREE.Mesh(
-        new THREE.PlaneGeometry(w,w*0.24),
-        new THREE.MeshBasicMaterial({map:mistTex,transparent:true,opacity:op,depthWrite:false,depthTest:false,fog:false})
-      );
-      mm.position.set((cN(mI*3.3)-0.5)*260, 30+cN(mI*4.1)*30, CFG.firstZ-(mI*1.4+5)*CFG.spacing*0.7);
-      mm.userData={spd:0.18+cN(mI*5.3)*0.18,ph:mI*1.7,base:op};
-      scene.add(mm); mists.push(mm);
-    }
-
-    /* the sun is a CSS layer behind the canvas (see .sun in styles.css): the opaque
-       ridges occlude it naturally, so it reads as sitting in the sky behind the range */
-
-    /* sparse warm motes drifting through the volume */
-    var pos=new Float32Array(CFG.moteCount*3),seedR=noiseFn(5.5),drift=[];
-    for(var d=0;d<CFG.moteCount;d++){
-      pos[d*3]= (seedR(d*1.1)-0.5)*130;
-      pos[d*3+1]= seedR(d*2.3)*26;
-      pos[d*3+2]= CFG.firstZ - seedR(d*3.7)*(CFG.layers*CFG.spacing);
-      drift.push({s:0.12+seedR(d*4.9)*0.3,ph:seedR(d*6.1)*6.28});
-    }
-    var pGeo=new THREE.BufferGeometry();
-    pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
-    var motes=new THREE.Points(pGeo,new THREE.PointsMaterial({
-      color:0xF2F6FA,size:0.34,sizeAttenuation:true,transparent:true,opacity:0.32,
-      depthWrite:false,blending:THREE.AdditiveBlending}));
-    scene.add(motes);
-
-    /* sizing */
-    function size(){
-      var w=stage.clientWidth,h=stage.clientHeight;
-      renderer.setSize(w,h,true);                 /* set canvas CSS px too — never let it show at buffer size */
-      cam.aspect=w/h; cam.updateProjectionMatrix();
-    }
-    size();
-    window.addEventListener('resize',size);
-
-    /* render loop — scroll-locked dolly, runs only while the hero is on screen */
-    var mx=0,my=0,t0=performance.now(),running=true,
-        fogW=new THREE.Color(CFG.fogWarm),fogC=new THREE.Color(CFG.fogCool);
-    function loop(now){
-      requestAnimationFrame(loop);
-      if(document.hidden) return;
-      frame();                                 /* keep scroll-driven styles in sync every frame */
-      if(window.scrollY>heroH*0.52){ running=false; return; }  /* greyout covers the scene — stop rendering */
-      running=true;
-      var t=(now-t0)/1000;
-      mx+=(mxT-mx)*0.045; my+=(myT-my)*0.045;
-      var pe=clamp01(heroProgress()/0.62);  /* LINEAR vertical descent — no ease-out into the definition */
-
-      /* descend straight DOWN the Y axis (not forward) — the range scrolls up past you */
-      cam.position.set(mx*0.5, lerp(CFG.camStart.y,CFG.camEnd.y,pe)-my*0.4, lerp(CFG.camStart.z,CFG.camEnd.z,pe));
-      cam.lookAt(mx*1.8, cam.position.y-3.9-my*0.6, cam.position.z-54);   /* gaze ~2° lower; gentle sway only */
-      cam.rotation.z=mx*0.003;
-
-      /* alpenglow cools as you descend */
-      scene.fog.color.copy(fogW).lerp(fogC,pe);
-
-      /* ridges fade just before the camera passes through them */
-      for(var i=0;i<ridges.length;i++){
-        var dz=cam.position.z-ridges[i].position.z;
-        ridges[i].visible=dz>0.5;
-        ridges[i].material.opacity=clamp01((dz-1.5)/9);
-      }
-      for(var m=0;m<mists.length;m++){
-        var M=mists[m], WX=210, FD=70;
-        M.position.x+=0.012+0.02*M.userData.spd;
-        if(M.position.x>WX)M.position.x-=2*WX;        /* seamless wrap (jump full span) */
-        var edge=clamp01((WX-Math.abs(M.position.x))/FD); /* fade to 0 at the wrap so it never pops */
-        M.material.opacity=M.userData.base*edge*(0.85+0.15*Math.sin(t*0.16+M.userData.ph));
-        M.visible=cam.position.z-M.position.z>2;
-      }
-
-      var arr=pGeo.attributes.position.array;
-      for(var k=0;k<CFG.moteCount;k++){
-        arr[k*3]  +=Math.sin(t*0.3+drift[k].ph)*0.004;
-        arr[k*3+1]+=drift[k].s*0.012;
-        if(arr[k*3+1]>27)arr[k*3+1]=0;
-      }
-      pGeo.attributes.position.needsUpdate=true;
-
-      renderer.render(scene,cam);
-    }
-    requestAnimationFrame(loop);
-
-    canvas.addEventListener('webglcontextlost',function(e){
-      e.preventDefault();
-      hero.classList.add('flat');
-      build2D(true);
-    });
-    return true;
-  }
-
-  /* ---------- 2D layered fallback (and the reduced-motion static scene) ---------- */
-  var twoD=null;
-  function build2D(animate){
-    if(twoD) return; twoD=true;
-    hero.classList.add('flat');
-    var n=10,layers=[],SVG='http://www.w3.org/2000/svg';
-    for(var i=0;i<n;i++){
-      var t=i/(n-1);                                   /* 0 far .. 1 near */
-      var div=document.createElement('div'); div.className='r2d'+(i===n-1?' nearest':'');
-      var hvh=lerp(62,34,Math.pow(t,1.2));             /* far layers sit higher */
-      div.style.height=hvh+'vh'; div.style.zIndex=String(i+1);
-      var svg=document.createElementNS(SVG,'svg');
-      svg.setAttribute('viewBox','0 0 1440 520');
-      svg.setAttribute('preserveAspectRatio','xMidYMax slice');
-      var path=document.createElementNS(SVG,'path');
-      var prof=ridgeProfile(7+i*13.7,3+(t>0.6?1:0),1.7+i*0.2,1.9+0.6*t,t<0.4?2:1,240);
-      var amp=lerp(0.5,0.92,Math.pow(t,1.1))*520, base=lerp(0.18,0.04,t)*520;
-      var d='M0,520 ';
-      for(var p=0;p<=240;p++){ d+='L'+((p/240)*1440).toFixed(1)+','+(520-base-prof[p]*amp).toFixed(1)+' '; }
-      d+='L1440,520 Z';
-      path.setAttribute('d',d);
-      path.setAttribute('fill',depthColor(1-t));
-      svg.appendChild(path); div.appendChild(svg); ranges.appendChild(div);
-      layers.push({el:div,t:t});
-    }
-    var m1=document.createElement('div'),m2=document.createElement('div');
-    m1.className='mist2d'; m1.style.bottom='30vh'; m1.style.zIndex='4';
-    m2.className='mist2d'; m2.style.bottom='16vh'; m2.style.zIndex='7';
-    ranges.appendChild(m1); ranges.appendChild(m2);
-
-    if(!animate || reduce) return;                     /* clean static layered scene */
-    var pS=0,mx=0,my=0;
-    function loop(){
-      requestAnimationFrame(loop);
-      if(document.hidden) return;
-      frame();
-      if(window.scrollY>heroH+10) return;
-      pS+=(heroProgress()-pS)*0.09; mx+=(mxT-mx)*0.05; my+=(myT-my)*0.05;
-      for(var i=0;i<layers.length;i++){
-        var L=layers[i],near=L.t;
-        L.el.style.transform='translate3d('+(mx*lerp(4,26,near)).toFixed(1)+'px,'+
-          (pS*lerp(22,260,Math.pow(near,1.5))+my*lerp(2,10,near)).toFixed(1)+'px,0)';
-      }
-      m1.style.transform='translateX('+(mx*14).toFixed(1)+'px)';
-      m2.style.transform='translateX('+(mx*30).toFixed(1)+'px)';
-    }
-    requestAnimationFrame(loop);
-  }
-
-  if(reduce){ build2D(false); }
-  else if(!buildGL()){ build2D(true); }
-
-  /* lift the white load veil once the first hero frame has painted (with a safety timeout) */
   var lifted=false, lift=function(){ if(lifted) return; lifted=true; document.body.classList.add('loaded'); };
-  requestAnimationFrame(function(){ requestAnimationFrame(lift); });
-  setTimeout(lift,1500);
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ requestAnimationFrame(lift); });
+  }
+  setTimeout(lift,1200);
 
-  /* ---------- scroll: --p variable + header state ---------- */
-  var ticking=false, siteReleased=false;
-  /* Descent timeline (p = scrollY / hero-spacer height):
-       0   .. 0.26  logo + tagline + sun slide UP and fade off the top
-       0   .. 0.70  camera descends straight DOWN; the range scrolls up past you
-       0.30.. 0.70  the paper-white whiteout builds in — the scene fogs out into white
-       0.72.. 0.86  the (now-white) fixed stage fades out, revealing the white site behind it
-       0.74.. 0.90  the Apu definition fades IN, held motionless (pinned) in the centre
-       0.90.. 1.0   hold — the definition breathes, still motionless
-       >= 1.0       released: the page scrolls normally (the definition scrolls up) */
-  function frame(){
-    var p=heroProgress(), T=heroH;
-    hero.style.setProperty('--p', reduce?0:clamp01(p/0.26));                 /* logo/sun slide up + fade */
+  /* ============================================================
+     Header: blur when scrolled, hide going down / show going up.
+     Red progress hairline.
+     ============================================================ */
+  var hdr=document.getElementById('hdr'),
+      prog=document.getElementById('progress'),
+      lastY=window.scrollY, ticking=false;
+  function onScroll(){
+    var y=window.scrollY;
+    hdr.classList.toggle('scrolled', y>40);
     if(!reduce){
-      if(whiteout) whiteout.style.opacity=String(clamp01((p-0.40)/0.12));    /* grey-out: late + fast, hidden by the already-grey descent */
-      if(stage)    stage.style.opacity=String(1-clamp01((p-0.52)/0.20));     /* grey stage fades the instant grey lands — definition appears sooner */
-      if(site){
-        if(window.scrollY<T){                                               /* hold the site pinned (revealed by the stage fade — opacity stays 1) */
-          if(siteReleased){ siteReleased=false; site.style.willChange='transform'; }
-          site.style.transform='translateY('+(window.scrollY-T).toFixed(1)+'px)';
-        } else if(!siteReleased){                                           /* released: scroll normally */
-          siteReleased=true; site.style.transform='none'; site.style.willChange='auto';
-        }
-      }
+      hdr.classList.toggle('hide', y>lastY && y>window.innerHeight*0.9);
     }
-    /* dark nav only once you're past the dark hero + grey definition, into the white content */
-    hdr.classList.toggle('solid', reduce ? window.scrollY>window.innerHeight*0.55 : window.scrollY > heroH + window.innerHeight*0.7);
+    lastY=y;
+    var doc=document.documentElement;
+    var max=Math.max(1,doc.scrollHeight-window.innerHeight);
+    if(prog) prog.style.transform='scaleX('+clamp01(y/max).toFixed(4)+')';
     ticking=false;
   }
   window.addEventListener('scroll',function(){
-    if(!ticking){ ticking=true; requestAnimationFrame(frame); }
+    if(!ticking){ ticking=true; requestAnimationFrame(onScroll); }
   },{passive:true});
-  frame();
+  onScroll();
 
   /* ============================================================
-     Everything below the hero — unchanged behavior
+     Reveals
      ============================================================ */
-
-  /* ---- single hero sound toggle (off by default) ---- */
-  var actx=null,master=null;
-  function ensureCtx(){if(!actx){actx=new (window.AudioContext||window.webkitAudioContext)();master=actx.createGain();master.gain.value=0.85;master.connect(actx.destination);}if(actx.state==='suspended')actx.resume();return actx;}
-  var F={A1:110,A2:220,C3:261.63,E3:329.63,G3:392,A3:440,C4:523.25,E4:659.25};
-  function tone(freq,start,dur,peak,type){var o=actx.createOscillator(),o2=actx.createOscillator(),g=actx.createGain(),og2=actx.createGain();
-    o.type=type||'sine';o2.type='sine';o.frequency.value=freq;o2.frequency.value=freq*2.001;og2.gain.value=0.12;o2.connect(og2).connect(g);
-    g.gain.setValueAtTime(0.0001,start);g.gain.exponentialRampToValueAtTime(peak,start+0.05);g.gain.exponentialRampToValueAtTime(0.0001,start+dur);
-    o.connect(g);g.connect(master);o.start(start);o2.start(start);o.stop(start+dur+0.05);o2.stop(start+dur+0.05);}
-  function signature(){var t=actx.currentTime+0.02;tone(F.A1,t,2.8,0.16,'sine');
-    [[F.A2,0],[F.C3,.36],[F.E3,.74],[F.G3,1.12],[F.A3,1.52],[F.E4,2.05]].forEach(function(p){tone(p[0],t+p[1],1.15,0.13,'triangle');});}
-  var st=document.getElementById('soundToggle'),stText=document.getElementById('stText'),npTimer=null;
-  var T=function(k,f){return window.apusT?window.apusT(k):f;};
-  st.addEventListener('click',function(){ensureCtx();signature();
-    document.body.classList.add('playing');stText.textContent=T('sound.playing','Now playing');clearTimeout(npTimer);
-    npTimer=setTimeout(function(){document.body.classList.remove('playing');stText.textContent=T('sound.idle','Sound');},3000);});
-
-  /* ---- cta ---- */
-  var ctaBtn=document.getElementById('ctaBtn'),ctaInput=document.getElementById('ctaInput');
-  if(ctaBtn)ctaBtn.addEventListener('click',function(){var v=(ctaInput.value||'').trim();
-    window.location.href='mailto:hola@apusonic.pe'+(v?('?subject=Commission&body=From: '+encodeURIComponent(v)):'');});
-
-  /* ---- marquee duplicate ---- */
-  var mt=document.getElementById('mtrack'); if(mt&&!reduce){mt.innerHTML+=mt.innerHTML;}
-
-  /* ---- reveals ---- */
   if('IntersectionObserver' in window && !reduce){
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12});
-    document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
-  } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');}); }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+    },{threshold:0.14,rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+  }
 
-  /* ---- graceful fallbacks if the binary assets are missing locally ---- */
+  /* ============================================================
+     Markets index — accordion (one open at a time; first opens on arrival)
+     ============================================================ */
+  var rows=Array.prototype.slice.call(document.querySelectorAll('#mkIndex .row'));
+  function setRow(row,open){
+    row.classList.toggle('open',open);
+    row.querySelector('.row-head').setAttribute('aria-expanded',open?'true':'false');
+  }
+  rows.forEach(function(row){
+    row.querySelector('.row-head').addEventListener('click',function(){
+      var isOpen=row.classList.contains('open');
+      rows.forEach(function(r){ setRow(r,false); });
+      if(!isOpen) setRow(row,true);
+    });
+  });
+  if(rows.length){
+    if('IntersectionObserver' in window && !reduce){
+      var ioRow=new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){ setRow(rows[0],true); ioRow.disconnect(); }
+        });
+      },{threshold:0.4});
+      ioRow.observe(rows[0]);
+    } else { setRow(rows[0],true); }
+  }
+
+  /* ============================================================
+     Marquee, banners, CTA, fallbacks
+     ============================================================ */
+  var mt=document.getElementById('mtrack'); if(mt&&!reduce){ mt.innerHTML+=mt.innerHTML; }
+
+  var ctaBtn=document.getElementById('ctaBtn'),ctaInput=document.getElementById('ctaInput');
+  if(ctaBtn) ctaBtn.addEventListener('click',function(){
+    var v=(ctaInput.value||'').trim();
+    window.location.href='mailto:hola@apusonic.pe'+(v?('?subject=Commission&body=From: '+encodeURIComponent(v)):'');
+  });
+
   function logoFallback(img){
     var span=document.createElement('span');
     span.className='logo-fallback';
-    span.setAttribute('role','img');
-    span.setAttribute('aria-label','Apusonic');
-    span.innerHTML='<span class="tri">\u25B2</span>PUSONIC';
+    span.setAttribute('role','img'); span.setAttribute('aria-label','Apusonic');
+    span.innerHTML='<span class="tri">▲</span>PUSONIC';
     img.replaceWith(span);
   }
   document.querySelectorAll('img.logo-mb').forEach(function(img){
     if(img.complete && img.naturalWidth===0){ logoFallback(img); }
     else img.addEventListener('error',function(){ logoFallback(img); });
   });
-  var bImg=document.querySelector('#banner img');
-  if(bImg){
-    var bFail=function(){ document.getElementById('banner').classList.add('noimg');
-      console.warn('Apusonic: assets/img/orchestra_Wide.jpg is missing — drop the original back into assets/img/.'); };
-    if(bImg.complete && bImg.naturalWidth===0) bFail();
-    else bImg.addEventListener('error',bFail);
-  }
+  document.querySelectorAll('.banner img').forEach(function(bImg){
+    var fail=function(){ bImg.closest('.banner').classList.add('noimg'); };
+    if(bImg.complete && bImg.naturalWidth===0) fail();
+    else bImg.addEventListener('error',fail);
+  });
 })();
