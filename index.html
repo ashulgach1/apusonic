@@ -49,6 +49,7 @@
 <div id="loadveil" aria-hidden="true"><span class="veil-tri">&#9650;</span></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"></span></div>
 
 <header id="hdr">
   <a class="brand" href="#top" aria-label="Apusonic home"><img class="logo-mb" src="assets/img/apusonic-logo.png" alt="Apusonic"></a>
@@ -112,7 +113,7 @@
 
   <!-- MANIFESTO -->
   <section class="wrap section manifesto">
-    <h2 class="lead reveal" data-i18n="manifesto.lead">Written here. Recorded here. <span class="red">Registered to endure.</span></h2>
+    <h2 class="lead rise" data-i18n="manifesto.lead">Written here. Recorded here. <span class="red">Registered to endure.</span></h2>
     <div class="mani-grid">
       <div class="mani reveal" style="--d:.05s"><span class="mani-i">01</span><h3 data-i18n="mani.1.h">The origination edge</h3><p data-i18n="mani.1.p">We don&rsquo;t pull tracks off a shelf. We write them, recorded with a full orchestra in Lima, so the work feels local, performs nationally, and moves people.</p></div>
       <div class="mani reveal" style="--d:.15s"><span class="mani-i">02</span><h3 data-i18n="mani.2.h">The rights engine</h3><p data-i18n="mani.2.p">Every original note is registered with APDAYC and the regional societies, so a single commission keeps earning royalties on every broadcast, stream, and public play, for the life of the work.</p></div>
@@ -135,9 +136,9 @@
 
   <!-- MARKETS — the money verticals, as an index. Click a row to open it. -->
   <section class="wrap section markets" id="markets">
-    <div class="sec-head reveal">
-      <p class="eyebrow" data-i18n="markets.eyebrow">Who we serve</p>
-      <h2 class="big" data-i18n="markets.h">Peru produces more <span class="red">than it can score.</span></h2>
+    <div class="sec-head">
+      <p class="eyebrow reveal" data-i18n="markets.eyebrow">Who we serve</p>
+      <h2 class="big rise" style="--d:.06s" data-i18n="markets.h">Peru produces more <span class="red">than it can score.</span></h2>
     </div>
     <div class="index" id="mkIndex">
       <div class="row reveal" style="--d:.02s">
@@ -169,9 +170,9 @@
 
   <!-- SERVICES -->
   <section class="wrap section svc" id="services">
-    <div class="sec-head reveal">
-      <p class="eyebrow" data-i18n="services.eyebrow">Our services</p>
-      <h2 class="big" data-i18n="services.h">One house.<br>Every sound a story needs.</h2>
+    <div class="sec-head">
+      <p class="eyebrow reveal" data-i18n="services.eyebrow">Our services</p>
+      <h2 class="big rise" style="--d:.06s" data-i18n="services.h">One house.<br>Every sound a story needs.</h2>
     </div>
     <div class="grid cols2">
       <div class="card reveal" style="--d:.02s"><span class="num">01</span><h3 data-i18n="svc.1.h">Bespoke Composition &amp; Sonic DNA</h3><p data-i18n="svc.1.p">Original scores for screen, brand anthems, and audio logos &mdash; written for you, recorded, mixed, and delivered as stems. Work-for-hire, with a retained writer&rsquo;s share.</p></div>
@@ -189,10 +190,10 @@
 
   <!-- PACKAGES -->
   <section class="wrap section pkgs" id="packages">
-    <div class="sec-head reveal">
-      <p class="eyebrow" data-i18n="pkg.eyebrow">Packages</p>
-      <h2 class="big" data-i18n="pkg.h">Four ways to commission. <span class="red">Every note original.</span></h2>
-      <p class="pkg-note" data-i18n="pkg.note">Nothing here is pre-made. Every package is written for you, note by note &mdash; there is no catalog to buy from.</p>
+    <div class="sec-head">
+      <p class="eyebrow reveal" data-i18n="pkg.eyebrow">Packages</p>
+      <h2 class="big rise" style="--d:.06s" data-i18n="pkg.h">Four ways to commission. <span class="red">Every note original.</span></h2>
+      <p class="pkg-note reveal" style="--d:.16s" data-i18n="pkg.note">Nothing here is pre-made. Every package is written for you, note by note &mdash; there is no catalog to buy from.</p>
     </div>
     <div class="grid cols4">
       <div class="card pkg reveal" style="--d:.02s"><span class="pk">&#9650;</span><h3 data-i18n="pkg.1.h">Original Score</h3><p data-i18n="pkg.1.p">An original commercial score, composed to picture and delivered finished &mdash; sessions, mix, and full stems.</p></div>
@@ -207,7 +208,7 @@
     <canvas id="ctacanvas" aria-hidden="true"></canvas>
     <div class="wrap section cta">
       <p class="eyebrow reveal" data-i18n="cta.eyebrow">Commission</p>
-      <h2 class="reveal" style="--d:.08s" data-i18n="cta.h">Peru already has a voice.<br><span class="red">We carry it to the summit.</span></h2>
+      <h2 class="rise" style="--d:.08s" data-i18n="cta.h">Peru already has a voice.<br><span class="red">We carry it to the summit.</span></h2>
       <p class="sub reveal" style="--d:.16s" data-i18n="cta.sub">Reach out to the house that writes original sound and keeps what it earns. Tell us what needs music.</p>
       <div class="ctaform reveal" style="--d:.22s">
         <input id="ctaInput" type="email" placeholder="Your email" aria-label="Your email" data-i18n-ph="cta.ph" />
@@ -244,6 +245,7 @@
 
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/fx.js"></script>
 <script src="assets/js/gate.js"></script>
 </body>
 </html>
