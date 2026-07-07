@@ -7,14 +7,23 @@
   var reduce = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
   var EASE = 'cubic-bezier(.22,.75,.25,1)';
 
-  /* ---- clip-rise reveal for big headings ---- */
-  if('IntersectionObserver' in window){
-    var rio=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); rio.unobserve(e.target); } });
-    },{threshold:0.2, rootMargin:'0px 0px -8% 0px'});
-    document.querySelectorAll('.rise').forEach(function(el){ rio.observe(el); });
-  } else {
-    document.querySelectorAll('.rise').forEach(function(el){ el.classList.add('in'); });
+  /* ---- clip-rise reveal for big headings ----
+     .rise hides with clip-path:inset(112%), which collapses the element's
+     IntersectionObserver ratio to ~0 — so an observer is unreliable here (it
+     can leave a heading invisible forever). Drive it off getBoundingClientRect
+     instead, which reads the true layout box regardless of clip-path. */
+  var rises=[].slice.call(document.querySelectorAll('.rise'));
+  function checkRise(){
+    var vh=window.innerHeight;
+    for(var i=rises.length-1;i>=0;i--){
+      var r=rises[i].getBoundingClientRect();
+      if(r.top < vh*0.88 && r.bottom > 0){ rises[i].classList.add('in'); rises.splice(i,1); }
+    }
+  }
+  if(rises.length){
+    checkRise();
+    window.addEventListener('scroll', function(){ requestAnimationFrame(checkRise); }, {passive:true});
+    window.addEventListener('resize', checkRise, {passive:true});
   }
 
   if(reduce) return;   /* the rest is motion-only polish */
@@ -79,7 +88,7 @@
     requestAnimationFrame(loop);
     if(document.hidden) return;
     if(fine && ring){
-      rx+=(tgtX-rx)*0.18; ry+=(tgtY-ry)*0.18;
+      rx+=(tgtX-rx)*0.38; ry+=(tgtY-ry)*0.38;   /* snappier trail — was too laggy */
       ring.style.transform='translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px)';
     }
     if(marquee){

@@ -369,10 +369,10 @@ html:not(.js) .rise{clip-path:none;transform:none}
     mix-blend-mode:difference}
   .cursor-dot{position:fixed;top:0;left:0;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;
     background:#fff;will-change:transform}
-  .cursor-ring{position:fixed;top:0;left:0;width:38px;height:38px;margin:-19px 0 0 -19px;border-radius:50%;
-    border:1px solid rgba(255,255,255,.55);will-change:transform;
-    transition:width .32s var(--ease),height .32s var(--ease),margin .32s var(--ease),
-      border-color .32s ease,opacity .32s ease}
+  .cursor-ring{position:fixed;top:0;left:0;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;
+    border:1px solid rgba(255,255,255,.6);will-change:transform;
+    transition:width .2s var(--ease),height .2s var(--ease),margin .2s var(--ease),
+      border-color .2s ease,opacity .25s ease}
   body.cursor-hot .cursor-ring{width:58px;height:58px;margin:-29px 0 0 -29px;border-color:#fff}
   body.cursor-press .cursor-ring{width:30px;height:30px;margin:-15px 0 0 -15px}
   /* hide the ring while the gate is up so it doesn't distract from the password field */
