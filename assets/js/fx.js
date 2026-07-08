@@ -54,16 +54,13 @@
      The triangle follows almost 1:1, tilts into the direction of travel,
      and grows over interactives. All smoothing lives in the rAF loop so the
      shape stays composited (no CSS transitions on transform). */
-  var cursor=document.getElementById('cursor'), dot=null, tri=null,
-      tgtX=window.innerWidth/2, tgtY=window.innerHeight/2, rx=tgtX, ry=tgtY,
-      curS=1, curR=0, prevX=tgtX, velX=0;
+  var cursor=document.getElementById('cursor'), arrow=null,
+      tgtX=window.innerWidth/2, tgtY=window.innerHeight/2, rx=tgtX, ry=tgtY, curS=1;
   if(fine && cursor){
-    dot=cursor.querySelector('.cursor-dot');
-    tri=cursor.querySelector('.cursor-tri');
+    arrow=cursor.querySelector('.cursor-arrow');
     document.documentElement.classList.add('has-cursor');   /* only now hide the native cursor */
     window.addEventListener('mousemove',function(e){
       tgtX=e.clientX; tgtY=e.clientY;
-      if(dot) dot.style.transform='translate('+tgtX+'px,'+tgtY+'px)';
     },{passive:true});
     var HOT='a,button,input,label,.row-head,.card,.lang-toggle,[role=option]';
     document.addEventListener('mouseover',function(e){
@@ -91,15 +88,12 @@
   function loop(){
     requestAnimationFrame(loop);
     if(document.hidden) return;
-    if(fine && tri){
-      rx+=(tgtX-rx)*0.6; ry+=(tgtY-ry)*0.6;     /* near-1:1 follow, just a breath of trail */
-      velX+=((tgtX-prevX)-velX)*0.2; prevX=tgtX;
-      var sT=document.body.classList.contains('cursor-press')?0.78
-            :document.body.classList.contains('cursor-hot')?1.55:1;
-      curS+=(sT-curS)*0.3;
-      var rT=Math.max(-16,Math.min(16,velX*0.9));  /* lean into the direction of travel */
-      curR+=(rT-curR)*0.25;
-      tri.style.transform='translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px) rotate('+curR.toFixed(1)+'deg) scale('+curS.toFixed(3)+')';
+    if(fine && arrow){
+      rx+=(tgtX-rx)*0.72; ry+=(tgtY-ry)*0.72;    /* near-1:1 — snappy, just a hair of smoothing */
+      var sT=document.body.classList.contains('cursor-press')?0.8
+            :document.body.classList.contains('cursor-hot')?1.45:1;
+      curS+=(sT-curS)*0.4;
+      arrow.style.transform='translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px) scale('+curS.toFixed(3)+')';
     }
     if(marquee){
       var target=Math.max(-4,Math.min(4,vel*0.28));
