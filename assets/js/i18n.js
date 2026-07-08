@@ -62,7 +62,15 @@
       'foot.col1':'Services','foot.s1':'Composition & Sonic DNA','foot.s2':'Rights & Monetization','foot.s3':'Sonic Branding','foot.s4':'ADR & Localized Scoring','foot.s5':'Adaptive Game Score',
       'foot.col2':'Solutions','foot.sol1':'Streaming & Cable TV','foot.sol2':'Video Games','foot.sol3':'Stadiums & Clubs','foot.sol4':'Government & Institutions','foot.sol5':'Film & Advertising',
       'foot.col3':'Company','foot.c1':'Contact','foot.c3':'Lima, Perú',
-      'foot.copy':'© 2026 Apusonic','foot.reg':'Registered with APDAYC · Lima, Perú'
+      'foot.leg1':'Privacy Policy','foot.leg2':'Terms of Use','foot.leg3':'Cookie Policy','foot.manage':'Cookie preferences',
+      'foot.copy':'© 2026 Apusonic','foot.reg':'Registered with APDAYC · Lima, Perú',
+      'mnav.packages':'Packages',
+      'ck.t':'Cookies',
+      'ck.x':'We use essential cookies to make this site work. With your permission, we’d also use analytics to understand how it’s used. You can accept, decline, or choose per category.',
+      'ck.accept':'Accept all','ck.decline':'Decline','ck.custom':'Customize','ck.save':'Save choices','ck.more':'Cookie policy',
+      'ck.nec':'Essential','ck.necd':'Required for the site to function (language, session). Always on.',
+      'ck.ana':'Analytics','ck.anad':'Anonymous usage statistics that help us improve the site.',
+      'ck.mkt':'Marketing','ck.mktd':'Used to measure campaigns. Never sold or shared.'
     },
     es: {
       'nav.services':'Servicios','nav.solutions':'Soluciones','nav.contact':'Contacto',
@@ -124,7 +132,15 @@
       'foot.col1':'Servicios','foot.s1':'Composición y ADN sonoro','foot.s2':'Derechos y monetización','foot.s3':'Identidad sonora','foot.s4':'ADR y musicalización localizada','foot.s5':'Música adaptativa para videojuegos',
       'foot.col2':'Soluciones','foot.sol1':'Streaming y TV por cable','foot.sol2':'Videojuegos','foot.sol3':'Estadios y clubes','foot.sol4':'Gobierno e instituciones','foot.sol5':'Cine y publicidad',
       'foot.col3':'Empresa','foot.c1':'Contacto','foot.c3':'Lima, Perú',
-      'foot.copy':'© 2026 Apusonic','foot.reg':'Registrado en APDAYC · Lima, Perú'
+      'foot.leg1':'Política de Privacidad','foot.leg2':'Términos de Uso','foot.leg3':'Política de Cookies','foot.manage':'Preferencias de cookies',
+      'foot.copy':'© 2026 Apusonic','foot.reg':'Registrado en APDAYC · Lima, Perú',
+      'mnav.packages':'Paquetes',
+      'ck.t':'Cookies',
+      'ck.x':'Usamos cookies esenciales para que el sitio funcione. Con tu permiso, también usaríamos analítica para entender cómo se usa. Puedes aceptar, rechazar o elegir por categoría.',
+      'ck.accept':'Aceptar todas','ck.decline':'Rechazar','ck.custom':'Personalizar','ck.save':'Guardar elección','ck.more':'Política de cookies',
+      'ck.nec':'Esenciales','ck.necd':'Necesarias para que el sitio funcione (idioma, sesión). Siempre activas.',
+      'ck.ana':'Analítica','ck.anad':'Estadísticas anónimas de uso que nos ayudan a mejorar el sitio.',
+      'ck.mkt':'Marketing','ck.mktd':'Para medir campañas. Nunca se venden ni se comparten.'
     },
     pt: {
       'nav.services':'Serviços','nav.solutions':'Soluções','nav.contact':'Contato',
@@ -186,7 +202,15 @@
       'foot.col1':'Serviços','foot.s1':'Composição e DNA sonoro','foot.s2':'Direitos e monetização','foot.s3':'Identidade sonora','foot.s4':'ADR e trilha localizada','foot.s5':'Trilha adaptativa para games',
       'foot.col2':'Soluções','foot.sol1':'Streaming e TV a cabo','foot.sol2':'Videogames','foot.sol3':'Estádios e clubes','foot.sol4':'Governo e instituições','foot.sol5':'Cinema e publicidade',
       'foot.col3':'Empresa','foot.c1':'Contato','foot.c3':'Lima, Peru',
-      'foot.copy':'© 2026 Apusonic','foot.reg':'Registrado na APDAYC · Lima, Peru'
+      'foot.leg1':'Política de Privacidade','foot.leg2':'Termos de Uso','foot.leg3':'Política de Cookies','foot.manage':'Preferências de cookies',
+      'foot.copy':'© 2026 Apusonic','foot.reg':'Registrado na APDAYC · Lima, Peru',
+      'mnav.packages':'Pacotes',
+      'ck.t':'Cookies',
+      'ck.x':'Usamos cookies essenciais para o site funcionar. Com a sua permissão, também usaríamos análises para entender como ele é usado. Você pode aceitar, recusar ou escolher por categoria.',
+      'ck.accept':'Aceitar todos','ck.decline':'Recusar','ck.custom':'Personalizar','ck.save':'Salvar escolhas','ck.more':'Política de cookies',
+      'ck.nec':'Essenciais','ck.necd':'Necessários para o funcionamento do site (idioma, sessão). Sempre ativos.',
+      'ck.ana':'Análises','ck.anad':'Estatísticas anônimas de uso que nos ajudam a melhorar o site.',
+      'ck.mkt':'Marketing','ck.mktd':'Para medir campanhas. Nunca vendidos nem compartilhados.'
     }
   };
 

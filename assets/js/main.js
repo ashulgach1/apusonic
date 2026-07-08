@@ -311,6 +311,30 @@
   onScroll();
 
   /* ============================================================
+     Mobile navigation
+     ============================================================ */
+  var menuBtn=document.getElementById('menuBtn'),
+      mnav=document.getElementById('mnav');
+  function setMenu(open){
+    document.body.classList.toggle('menu-open',open);
+    menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    menuBtn.setAttribute('aria-label',open?'Close menu':'Open menu');
+    mnav.setAttribute('aria-hidden',open?'false':'true');
+    if(open) hdr.classList.remove('hide');    /* header must stay reachable to close */
+  }
+  if(menuBtn&&mnav){
+    menuBtn.addEventListener('click',function(){
+      setMenu(!document.body.classList.contains('menu-open'));
+    });
+    mnav.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(){ setMenu(false); });
+    });
+    document.addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&document.body.classList.contains('menu-open')) setMenu(false);
+    });
+  }
+
+  /* ============================================================
      Reveals
      ============================================================ */
   if('IntersectionObserver' in window && !reduce){

@@ -49,7 +49,7 @@
 <div id="loadveil" aria-hidden="true"><span class="veil-tri">&#9650;</span></div>
 <div class="grain" aria-hidden="true"></div>
 <div class="progress" id="progress" aria-hidden="true"></div>
-<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-dot"></span><span class="cursor-ring"></span></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span class="cursor-dot"></span><svg class="cursor-tri" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4.5 28.5 26.5H3.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
 
 <header id="hdr">
   <a class="brand" href="#top" aria-label="Apusonic home"><img class="logo-mb" src="assets/img/apusonic-logo.png" alt="Apusonic"></a>
@@ -77,8 +77,25 @@
         </li>
       </ul>
     </div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mnav" aria-label="Open menu">
+      <span class="mb-ln"></span><span class="mb-ln"></span>
+    </button>
   </nav>
 </header>
+
+<!-- mobile navigation overlay -->
+<div class="mnav" id="mnav" aria-hidden="true">
+  <nav class="mnav-links" aria-label="Mobile">
+    <a href="#markets"><span class="mn-no">01</span><span data-i18n="nav.solutions">Solutions</span></a>
+    <a href="#services"><span class="mn-no">02</span><span data-i18n="nav.services">Services</span></a>
+    <a href="#packages"><span class="mn-no">03</span><span data-i18n="mnav.packages">Packages</span></a>
+    <a href="#contact"><span class="mn-no">04</span><span data-i18n="nav.contact">Contact</span></a>
+  </nav>
+  <div class="mnav-foot">
+    <a href="mailto:hola@apusonic.pe">hola@apusonic.pe</a>
+    <span data-i18n="foot.c3">Lima, Perú</span>
+  </div>
+</div>
 
 <main id="top">
 
@@ -235,17 +252,49 @@
         </div>
         <div class="fcol"><h5 data-i18n="foot.col3">Company</h5>
           <a href="#contact" data-i18n="foot.c1">Contact</a><a href="mailto:hola@apusonic.pe">hola@apusonic.pe</a><a href="#top" data-i18n="foot.c3">Lima, Per&uacute;</a>
+          <a href="legal.html#privacidad" data-i18n="foot.leg1">Privacy Policy</a><a href="legal.html#terminos" data-i18n="foot.leg2">Terms of Use</a><a href="legal.html#cookies" data-i18n="foot.leg3">Cookie Policy</a><button class="linklike" id="ckManage" type="button" data-i18n="foot.manage">Cookie preferences</button>
         </div>
       </div>
+      <!-- Libro de Reclamaciones — required visible + <=2 clicks from home
+           (Ley 29571 art. 150 / Ley 32495; Indecopi Res. 0272-2024) -->
+      <a class="libro" href="legal.html#libro" aria-label="Libro de Reclamaciones">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h11a3 3 0 0 1 3 3v15H8a3 3 0 0 1-3-3V3z" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9 8h6M9 12h6" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>Libro de Reclamaciones</span>
+      </a>
+      <!-- TEMP legal identity: razón social + RUC are PLACEHOLDERS — replace with the
+           real registration before public launch -->
+      <p class="foot-legal">Apusonic S.A.C. &middot; RUC N.&ordm; 20612345678 &middot; Av. Larco 1301, Miraflores, Lima, Per&uacute;</p>
       <div class="foot-bot"><span data-i18n="foot.copy">&copy; 2026 Apusonic</span><span data-i18n="foot.reg">Registered with APDAYC · Lima, Per&uacute;</span></div>
     </div>
   </footer>
 
 </main>
 
+<!-- Cookie consent — Ley 29733 / D.S. 016-2024-JUS: express, granular, nothing
+     pre-checked. Non-essential categories stay off until the visitor opts in. -->
+<div class="consent" id="consent" role="dialog" aria-modal="false" aria-label="Cookie preferences" hidden>
+  <div class="consent-in">
+    <p class="consent-t"><span class="pk">&#9650;</span><span data-i18n="ck.t">Cookies</span></p>
+    <p class="consent-x" data-i18n="ck.x">We use essential cookies to make this site work. With your permission, we&rsquo;d also use analytics to understand how it&rsquo;s used. You can accept, decline, or choose per category.</p>
+    <div class="consent-panel" id="consentPanel" hidden>
+      <label class="ck-row"><input type="checkbox" checked disabled><span><strong data-i18n="ck.nec">Essential</strong> <em data-i18n="ck.necd">Required for the site to function (language, session). Always on.</em></span></label>
+      <label class="ck-row"><input type="checkbox" id="ckAnalytics"><span><strong data-i18n="ck.ana">Analytics</strong> <em data-i18n="ck.anad">Anonymous usage statistics that help us improve the site.</em></span></label>
+      <label class="ck-row"><input type="checkbox" id="ckMarketing"><span><strong data-i18n="ck.mkt">Marketing</strong> <em data-i18n="ck.mktd">Used to measure campaigns. Never sold or shared.</em></span></label>
+    </div>
+    <div class="consent-btns">
+      <button class="cbtn fill" id="ckAccept" data-i18n="ck.accept">Accept all</button>
+      <button class="cbtn" id="ckDecline" data-i18n="ck.decline">Decline</button>
+      <button class="cbtn ghost" id="ckCustom" aria-expanded="false" data-i18n="ck.custom">Customize</button>
+      <button class="cbtn fill" id="ckSave" data-i18n="ck.save" hidden>Save choices</button>
+    </div>
+    <p class="consent-legal"><a href="legal.html#cookies" data-i18n="ck.more">Cookie policy</a> · <a href="legal.html#privacidad" data-i18n="foot.leg1">Privacy policy</a></p>
+  </div>
+</div>
+
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/fx.js"></script>
+<script src="assets/js/consent.js"></script>
 <script src="assets/js/gate.js"></script>
 </body>
 </html>

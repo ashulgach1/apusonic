@@ -50,12 +50,16 @@
     });
   }
 
-  /* ---- custom cursor: instant dot + lagging ring ---- */
-  var cursor=document.getElementById('cursor'), dot=null, ring=null,
-      tgtX=window.innerWidth/2, tgtY=window.innerHeight/2, rx=tgtX, ry=tgtY;
+  /* ---- custom cursor: instant dot + tight triangle (the brand mark) ----
+     The triangle follows almost 1:1, tilts into the direction of travel,
+     and grows over interactives. All smoothing lives in the rAF loop so the
+     shape stays composited (no CSS transitions on transform). */
+  var cursor=document.getElementById('cursor'), dot=null, tri=null,
+      tgtX=window.innerWidth/2, tgtY=window.innerHeight/2, rx=tgtX, ry=tgtY,
+      curS=1, curR=0, prevX=tgtX, velX=0;
   if(fine && cursor){
     dot=cursor.querySelector('.cursor-dot');
-    ring=cursor.querySelector('.cursor-ring');
+    tri=cursor.querySelector('.cursor-tri');
     document.documentElement.classList.add('has-cursor');   /* only now hide the native cursor */
     window.addEventListener('mousemove',function(e){
       tgtX=e.clientX; tgtY=e.clientY;
@@ -83,13 +87,19 @@
     var y=window.scrollY; vel=y-lastY; lastY=y;
   },{passive:true});
 
-  /* ---- one rAF loop: ring easing + skew decay ---- */
+  /* ---- one rAF loop: cursor easing + skew decay ---- */
   function loop(){
     requestAnimationFrame(loop);
     if(document.hidden) return;
-    if(fine && ring){
-      rx+=(tgtX-rx)*0.38; ry+=(tgtY-ry)*0.38;   /* snappier trail — was too laggy */
-      ring.style.transform='translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px)';
+    if(fine && tri){
+      rx+=(tgtX-rx)*0.6; ry+=(tgtY-ry)*0.6;     /* near-1:1 follow, just a breath of trail */
+      velX+=((tgtX-prevX)-velX)*0.2; prevX=tgtX;
+      var sT=document.body.classList.contains('cursor-press')?0.78
+            :document.body.classList.contains('cursor-hot')?1.55:1;
+      curS+=(sT-curS)*0.3;
+      var rT=Math.max(-16,Math.min(16,velX*0.9));  /* lean into the direction of travel */
+      curR+=(rT-curR)*0.25;
+      tri.style.transform='translate('+rx.toFixed(1)+'px,'+ry.toFixed(1)+'px) rotate('+curR.toFixed(1)+'deg) scale('+curS.toFixed(3)+')';
     }
     if(marquee){
       var target=Math.max(-4,Math.min(4,vel*0.28));
