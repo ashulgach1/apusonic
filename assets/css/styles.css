@@ -533,6 +533,50 @@ body.menu-open .mnav-foot{opacity:1;transform:none}
 .legal-upd{margin-top:clamp(48px,7vh,72px);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .legal-page footer{margin-top:0}
 
+/* the page grew to nine sections — a sticky-free index keeps it navigable */
+.legal-toc{display:flex;flex-wrap:wrap;gap:8px 10px;margin-top:28px}
+.legal-toc a{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);
+  border:1px solid var(--line);border-radius:99px;padding:7px 14px;text-decoration:none;
+  transition:border-color .3s ease,color .3s ease,transform .3s var(--ease)}
+.legal-toc a:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px)}
+
+/* sub-headings inside a legal section (Responsable, Plazo, Tus derechos…) */
+.legal h3{margin-top:30px;font-weight:500;font-size:13px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ink)}
+.legal h3+p,.legal h3+ul,.legal h3+table{margin-top:10px}
+.legal :target{scroll-margin-top:110px}   /* anchor links clear the fixed header */
+
+/* numbered process steps — the reclamo action plan */
+.legal-steps{counter-reset:st;list-style:none;margin:18px 0 0;padding:0;
+  display:flex;flex-direction:column;gap:14px;max-width:78ch}
+.legal-steps li{counter-increment:st;position:relative;padding-left:44px;
+  font-size:14.5px;line-height:1.75;color:var(--soft)}
+.legal-steps li::before{content:counter(st,decimal-leading-zero);position:absolute;left:0;top:2px;
+  font-size:11px;letter-spacing:.1em;color:var(--red);font-weight:500}
+.legal-steps strong{color:var(--ink);font-weight:500}
+
+/* Indecopi notice — must read as a callout, not body copy */
+.legal-warn{margin-top:22px;border-left:2px solid var(--red);padding:14px 0 14px 18px;
+  background:linear-gradient(90deg,rgba(225,29,60,.05),transparent 60%)}
+
+/* Quechua extract of the practice code */
+.legal-qu{margin-top:30px;border:1px solid var(--line);border-radius:8px;padding:22px 24px}
+.legal-qu .qu-lbl{margin:0 0 4px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--red)}
+.legal-qu ul{margin-left:16px}
+.legal-qu strong{color:var(--ink);font-weight:500}
+
+@media (max-width:640px){
+  .legal-toc a{padding:6px 11px;letter-spacing:.08em}
+  .ck-table,.ck-table tbody,.ck-table tr,.ck-table th,.ck-table td{display:block;width:100%}
+  .ck-table tr{border:1px solid var(--line);margin-bottom:10px;padding:4px 0}
+  .ck-table th,.ck-table td{border:0;padding:8px 14px}
+  .ck-table tr:first-child{display:none}   /* header row is meaningless once stacked */
+  /* stacked cells lose their column, so restate it from data-l */
+  .ck-table td[data-l]::before{content:attr(data-l);display:block;
+    font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:3px}
+  .legal-qu{padding:18px}
+}
+
 /* ============================================================
    MOBILE PASS — scale, spacing, stacking
    ============================================================ */

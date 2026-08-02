@@ -23,50 +23,275 @@
 
 <main class="wrap legal">
 
-  <!-- TEMP: todo el contenido legal de esta página es una PLANTILLA con datos de
-       ejemplo (razón social, RUC, dirección). Reemplazar con los datos reales y
-       revisión de un abogado antes del lanzamiento público. -->
+  <!-- ============================================================
+       TEMP — DATOS DE REGISTRO PENDIENTES
+       Razón social, RUC, domicilio fiscal y teléfono son PLANTILLA.
+       Reemplazar por los datos reales de la constitución de la empresa
+       antes del lanzamiento público. Buscar "PENDIENTE" en este archivo.
+       ============================================================ -->
 
   <p class="eyebrow" style="margin-top:140px">Legal</p>
-  <h1>Información legal <span class="soft">/ Legal information</span></h1>
+  <h1>Informaci&oacute;n legal <span class="soft">/ Legal information</span></h1>
   <p class="legal-id">Apusonic S.A.C. &middot; RUC N.&ordm; 20612345678 &middot; Av. Larco 1301, Miraflores, Lima, Per&uacute; &middot; hola@apusonic.pe</p>
 
-  <section id="libro">
-    <h2><span class="pk">&#9650;</span> Libro de Reclamaciones</h2>
-    <p>Conforme al C&oacute;digo de Protecci&oacute;n y Defensa del Consumidor (Ley N.&ordm; 29571) y sus normas complementarias, ponemos a tu disposici&oacute;n nuestro Libro de Reclamaciones virtual. Para registrar un reclamo (disconformidad con el servicio) o una queja (malestar no relacionado con el servicio), escr&iacute;benos a <a href="mailto:hola@apusonic.pe?subject=Libro%20de%20Reclamaciones">hola@apusonic.pe</a> indicando:</p>
-    <ul>
-      <li>Nombre completo, DNI/CE, domicilio, tel&eacute;fono y correo electr&oacute;nico</li>
-      <li>Tipo: reclamo o queja</li>
-      <li>Descripci&oacute;n del servicio contratado y detalle del reclamo</li>
-      <li>Pedido concreto</li>
-    </ul>
-    <p>Responderemos dentro de un plazo m&aacute;ximo de <strong>15 d&iacute;as h&aacute;biles improrrogables</strong>. Recibir&aacute;s una constancia con el c&oacute;digo de tu hoja de reclamaci&oacute;n.</p>
-    <p class="en">EN — In accordance with Peru&rsquo;s Consumer Protection Code (Law 29571), our virtual complaints book is available by writing to hola@apusonic.pe with your full name, ID, contact details, and the details of your complaint. We respond within 15 working days.</p>
-  </section>
+  <!-- índice: la página creció a 8 secciones; sin sumario se vuelve un muro -->
+  <nav class="legal-toc" aria-label="Contenido">
+    <a href="#privacidad">Privacidad</a>
+    <a href="#cookies">Cookies</a>
+    <a href="#libro">Libro de Reclamaciones</a>
+    <a href="#reclamos">Atenci&oacute;n de reclamos</a>
+    <a href="#gobierno">Gobierno corporativo</a>
+    <a href="#denuncias">Canal de denuncias</a>
+    <a href="#practicas">Buenas pr&aacute;cticas</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#terminos">T&eacute;rminos</a>
+  </nav>
 
+  <!-- ============================================================
+       1. PRIVACIDAD — reescrita para cumplir el deber de información
+       del art. 18 Ley 29733 + D.S. 016-2024-JUS (vigente 30/03/2025):
+       identidad del titular, datos, finalidad, base legal, plazo de
+       conservación, banco de datos, destinatarios/transferencias,
+       y cómo ejercer derechos ARCO.
+       ============================================================ -->
   <section id="privacidad">
     <h2><span class="pk">&#9650;</span> Pol&iacute;tica de Privacidad</h2>
-    <p>Apusonic S.A.C. trata datos personales conforme a la Ley N.&ordm; 29733 &mdash; Ley de Protecci&oacute;n de Datos Personales &mdash; y su Reglamento (D.S. 016-2024-JUS). Los datos que nos proporciones (por ejemplo, tu correo al contactarnos) se usan &uacute;nicamente para responder a tu solicitud y gestionar la relaci&oacute;n comercial. No vendemos ni cedemos tus datos a terceros.</p>
-    <p>Puedes ejercer tus derechos de acceso, rectificaci&oacute;n, cancelaci&oacute;n y oposici&oacute;n (ARCO) escribiendo a <a href="mailto:hola@apusonic.pe?subject=Datos%20personales">hola@apusonic.pe</a>. Los datos se conservan solo el tiempo necesario para la finalidad informada y se almacenan con medidas de seguridad razonables.</p>
-    <p class="en">EN &mdash; We process personal data under Peru&rsquo;s Personal Data Protection Law (29733) and its 2024 regulation. Data you share with us is used only to respond to you and manage our commercial relationship; it is never sold. You may exercise your access, rectification, cancellation, and objection rights at hola@apusonic.pe.</p>
+
+    <p>Apusonic S.A.C. (&laquo;Apusonic&raquo;) trata datos personales conforme a la <strong>Ley N.&ordm; 29733, Ley de Protecci&oacute;n de Datos Personales</strong>, y su Reglamento aprobado por <strong>D.S. 016-2024-JUS</strong>. Esta pol&iacute;tica explica qu&eacute; datos tratamos, con qu&eacute; finalidad, por cu&aacute;nto tiempo y c&oacute;mo puedes ejercer tus derechos.</p>
+
+    <h3>Responsable del tratamiento</h3>
+    <p>Apusonic S.A.C., RUC N.&ordm; 20612345678, con domicilio en Av. Larco 1301, Miraflores, Lima, Per&uacute;. Contacto para asuntos de datos personales: <a href="mailto:datos@apusonic.pe">datos@apusonic.pe</a>.</p>
+
+    <h3>Qu&eacute; datos tratamos y con qu&eacute; finalidad</h3>
+    <table class="ck-table">
+      <tr><th>Datos</th><th>Finalidad</th><th>Base legal</th></tr>
+      <tr>
+        <td data-l="Datos">Correo electr&oacute;nico enviado por el formulario de contacto</td>
+        <td data-l="Finalidad">Responder tu consulta y evaluar un posible encargo</td>
+        <td data-l="Base legal">Consentimiento</td>
+      </tr>
+      <tr>
+        <td data-l="Datos">Nombre, cargo, empresa, tel&eacute;fono y correo de contactos profesionales</td>
+        <td data-l="Finalidad">Gestionar la relaci&oacute;n comercial, cotizar y ejecutar encargos</td>
+        <td data-l="Base legal">Ejecuci&oacute;n de relaci&oacute;n contractual</td>
+      </tr>
+      <tr>
+        <td data-l="Datos">Datos de facturaci&oacute;n e identificaci&oacute;n tributaria</td>
+        <td data-l="Finalidad">Emitir comprobantes y cumplir obligaciones contables y tributarias</td>
+        <td data-l="Base legal">Obligaci&oacute;n legal</td>
+      </tr>
+      <tr>
+        <td data-l="Datos">Datos de una hoja de reclamaci&oacute;n</td>
+        <td data-l="Finalidad">Atender el reclamo o queja y conservar el registro exigido</td>
+        <td data-l="Base legal">Obligaci&oacute;n legal</td>
+      </tr>
+      <tr>
+        <td data-l="Datos">Datos de navegaci&oacute;n (solo con tu consentimiento)</td>
+        <td data-l="Finalidad">Anal&iacute;tica agregada para mejorar el sitio</td>
+        <td data-l="Base legal">Consentimiento revocable</td>
+      </tr>
+    </table>
+    <p>No tratamos datos sensibles ni realizamos decisiones automatizadas que produzcan efectos jur&iacute;dicos sobre las personas. No dirigimos este sitio a menores de edad ni recopilamos sus datos de forma consciente.</p>
+
+    <h3>Plazo de conservaci&oacute;n</h3>
+    <p>Conservamos cada dato solo el tiempo necesario para la finalidad informada: las consultas comerciales no concretadas, hasta <strong>2 a&ntilde;os</strong> desde el &uacute;ltimo contacto; los datos de clientes y su documentaci&oacute;n contable, durante la relaci&oacute;n y el plazo legal de conservaci&oacute;n tributaria; las hojas de reclamaci&oacute;n, <strong>2 a&ntilde;os</strong> como m&iacute;nimo. Cumplido el plazo, los datos se suprimen o se anonimizan.</p>
+
+    <h3>Destinatarios y transferencias</h3>
+    <p>No vendemos ni cedemos datos personales. Podemos encargar su tratamiento a proveedores que nos prestan servicios &mdash; alojamiento del sitio, correo corporativo y contabilidad &mdash; siempre bajo contrato y con obligaciones de confidencialidad y seguridad. Algunos de estos proveedores operan servidores fuera del Per&uacute;, por lo que puede existir un <strong>flujo transfronterizo de datos</strong> amparado en las garant&iacute;as del art. 15 de la Ley N.&ordm; 29733. Solo entregamos datos a autoridades cuando media un requerimiento legal.</p>
+
+    <h3>Banco de datos personales</h3>
+    <p>Los datos se almacenan en los bancos de datos de titularidad de Apusonic S.A.C. destinados a &laquo;Clientes y contactos comerciales&raquo; y &laquo;Reclamos y quejas&raquo;, inscritos ante la Autoridad Nacional de Protecci&oacute;n de Datos Personales conforme al procedimiento vigente.</p>
+
+    <h3>Seguridad</h3>
+    <p>Aplicamos medidas t&eacute;cnicas y organizativas razonables &mdash; control de accesos, cifrado en tr&aacute;nsito, copias de respaldo y confidencialidad del personal &mdash; seg&uacute;n la Directiva de Seguridad de la Informaci&oacute;n. Ante una brecha que afecte tus datos, notificaremos a la Autoridad y a los afectados en los plazos que exige el Reglamento.</p>
+
+    <h3>Tus derechos</h3>
+    <p>Puedes ejercer tus derechos de <strong>acceso, rectificaci&oacute;n, cancelaci&oacute;n y oposici&oacute;n (ARCO)</strong>, as&iacute; como los de informaci&oacute;n, tratamiento objetivo y <strong>portabilidad</strong>, escribiendo a <a href="mailto:datos@apusonic.pe">datos@apusonic.pe</a> con copia de tu documento de identidad. Responderemos en los plazos legales: <strong>8 d&iacute;as h&aacute;biles</strong> para el acceso y <strong>10 d&iacute;as h&aacute;biles</strong> para rectificaci&oacute;n, cancelaci&oacute;n y oposici&oacute;n. Si consideras que no fuiste atendido, puedes acudir a la <strong>Autoridad Nacional de Protecci&oacute;n de Datos Personales</strong> del Ministerio de Justicia y Derechos Humanos.</p>
+
+    <p class="en">EN &mdash; We process personal data under Peru&rsquo;s Personal Data Protection Law (29733) and its 2024 regulation (D.S. 016-2024-JUS). The table above sets out what we collect, why, and on what legal basis. We never sell personal data; processors acting for us are contractually bound, and some host data abroad under the cross-border safeguards of art. 15. Retention is purpose-limited (2 years for unconverted enquiries, statutory periods for accounting and complaint records). You may exercise access, rectification, cancellation, objection and portability rights at datos@apusonic.pe, and escalate to Peru&rsquo;s National Data Protection Authority.</p>
   </section>
 
+  <!-- ============================================================
+       2. COOKIES — refleja lo que consent.js realmente hace.
+       Solo almacenamiento local esencial; analítica/marketing OFF por
+       defecto y activables únicamente con consentimiento expreso.
+       ============================================================ -->
   <section id="cookies">
     <h2><span class="pk">&#9650;</span> Pol&iacute;tica de Cookies</h2>
     <p>Este sitio usa almacenamiento local esencial para funcionar (idioma seleccionado, sesi&oacute;n de vista previa y tu preferencia de cookies). Las categor&iacute;as no esenciales (anal&iacute;tica, marketing) est&aacute;n <strong>desactivadas por defecto</strong> y solo se activan con tu consentimiento expreso, que puedes retirar en cualquier momento desde &laquo;Preferencias de cookies&raquo; en el pie de p&aacute;gina.</p>
     <table class="ck-table">
-      <tr><th>Clave</th><th>Tipo</th><th>Finalidad</th></tr>
-      <tr><td>apus-lang</td><td>Esencial</td><td>Recordar el idioma elegido</td></tr>
-      <tr><td>apus-unlocked</td><td>Esencial</td><td>Sesi&oacute;n de vista previa privada</td></tr>
-      <tr><td>apus-consent-v1</td><td>Esencial</td><td>Guardar tu decisi&oacute;n sobre cookies</td></tr>
+      <tr><th>Clave</th><th>Tipo</th><th>Finalidad</th><th>Duraci&oacute;n</th></tr>
+      <tr><td data-l="Clave">apus-lang</td><td data-l="Tipo">Esencial</td><td data-l="Finalidad">Recordar el idioma elegido</td><td data-l="Duraci&oacute;n">Persistente</td></tr>
+      <tr><td data-l="Clave">apus-unlocked</td><td data-l="Tipo">Esencial</td><td data-l="Finalidad">Sesi&oacute;n de vista previa privada</td><td data-l="Duraci&oacute;n">Sesi&oacute;n</td></tr>
+      <tr><td data-l="Clave">apus-consent-v1</td><td data-l="Tipo">Esencial</td><td data-l="Finalidad">Guardar tu decisi&oacute;n sobre cookies y su fecha</td><td data-l="Duraci&oacute;n">Persistente</td></tr>
     </table>
+    <p>Mientras no aceptes las categor&iacute;as opcionales, este sitio no carga cookies de anal&iacute;tica ni de marketing de terceros.</p>
     <p class="en">EN &mdash; This site uses essential local storage only (language, preview session, your cookie choice). Non-essential categories are off by default and activate only with your express consent, revocable anytime via &ldquo;Cookie preferences&rdquo; in the footer.</p>
+  </section>
+
+  <!-- ============================================================
+       3. LIBRO DE RECLAMACIONES — formato de contenido mínimo.
+       Ley 29571 (Código de Consumo) + D.S. 011-2011-PCM (Anexo) +
+       D.S. 006-2014-PCM (libro virtual). El plazo de 15 días hábiles
+       improrrogables viene de la Ley 31435, que modificó el art. 24
+       de la Ley 29571 (antes eran 30 días calendario).
+
+       NOTA DE NEGOCIO: Apusonic opera B2B (encargos de obra a
+       empresas, clubes y entidades), donde no hay "relación de
+       consumo" en sentido estricto. Se mantiene el libro de forma
+       voluntaria: cuesta poco y acredita cumplimiento ante los
+       compradores institucionales que son el objetivo comercial.
+       ============================================================ -->
+  <section id="libro">
+    <h2><span class="pk">&#9650;</span> Libro de Reclamaciones</h2>
+    <p>Conforme al <strong>C&oacute;digo de Protecci&oacute;n y Defensa del Consumidor (Ley N.&ordm; 29571)</strong>, al <strong>D.S. 011-2011-PCM</strong> y al <strong>D.S. 006-2014-PCM</strong>, ponemos a disposici&oacute;n nuestro <strong>Libro de Reclamaciones virtual</strong>. Est&aacute; accesible desde cualquier p&aacute;gina de este sitio a un solo clic, en el pie de p&aacute;gina.</p>
+
+    <h3>Reclamo o queja</h3>
+    <p><strong>Reclamo:</strong> disconformidad relacionada con el servicio contratado. <strong>Queja:</strong> malestar respecto de la atenci&oacute;n recibida, no vinculado directamente al servicio.</p>
+
+    <h3>Formato de la Hoja de Reclamaci&oacute;n</h3>
+    <p>Para registrar tu reclamo o queja, escr&iacute;benos a <a href="mailto:reclamos@apusonic.pe?subject=Hoja%20de%20Reclamaci%C3%B3n">reclamos@apusonic.pe</a> con el asunto &laquo;Hoja de Reclamaci&oacute;n&raquo;, incluyendo la informaci&oacute;n del formato oficial:</p>
+    <ul>
+      <li><strong>1. Identificaci&oacute;n del proveedor</strong> &mdash; Apusonic S.A.C., RUC N.&ordm; 20612345678, Av. Larco 1301, Miraflores, Lima. <em>(lo completamos nosotros)</em></li>
+      <li><strong>2. Identificaci&oacute;n del consumidor</strong> &mdash; nombre completo, DNI o CE, domicilio, tel&eacute;fono y correo electr&oacute;nico. Si eres menor de edad, los datos de tu padre, madre o apoderado.</li>
+      <li><strong>3. Identificaci&oacute;n del bien o servicio</strong> &mdash; descripci&oacute;n del servicio contratado, fecha de contrataci&oacute;n y monto reclamado, si corresponde.</li>
+      <li><strong>4. Tipo</strong> &mdash; indica expresamente si se trata de un <strong>reclamo</strong> o de una <strong>queja</strong>.</li>
+      <li><strong>5. Detalle</strong> &mdash; descripci&oacute;n clara de lo ocurrido.</li>
+      <li><strong>6. Pedido</strong> &mdash; qu&eacute; solicitas concretamente.</li>
+      <li><strong>7. Conformidad</strong> &mdash; una l&iacute;nea final declarando que el contenido de tu reclamo es conforme, con la fecha. Tu env&iacute;o desde tu propio correo sustituye la firma manuscrita.</li>
+    </ul>
+    <p>Al recibirlo te enviaremos, de forma inmediata y sin costo, una <strong>constancia con el c&oacute;digo correlativo</strong> de tu hoja de reclamaci&oacute;n y una copia de lo registrado, para que puedas conservarla o imprimirla. Conservamos las hojas por un m&iacute;nimo de <strong>dos (2) a&ntilde;os</strong>.</p>
+
+    <p class="legal-warn"><strong>Importante:</strong> la formulaci&oacute;n de un reclamo o queja no impide acudir a otras v&iacute;as de soluci&oacute;n de controversias ni constituye requisito previo para denunciar ante el <strong>Indecopi</strong>. Puedes presentar tu reclamo directamente en <a href="https://www.consumidor.gob.pe" target="_blank" rel="noopener">consumidor.gob.pe</a> o llamando al 224-7777 (Lima) o 0800-4-4040 (provincias).</p>
+
+    <p class="en">EN &mdash; Our virtual complaints book operates under Peru&rsquo;s Consumer Protection Code (Law 29571) and D.S. 011-2011-PCM. Write to reclamos@apusonic.pe with the fields listed above; you will receive an immediate receipt bearing a sequential code, and we respond within 15 working days. Filing here does not prevent you from taking the matter to Indecopi or any other forum.</p>
+  </section>
+
+  <!-- ============================================================
+       4. PROCESO DE RESPUESTA — lo que la abogada pidió explícitamente:
+       "tener plasmado un proceso de respuesta y plan de acción".
+       El plazo de 15 días hábiles improrrogables es el techo legal
+       (Ley 31435); los hitos internos van por debajo de ese techo.
+       ============================================================ -->
+  <section id="reclamos">
+    <h2><span class="pk">&#9650;</span> Proceso de atenci&oacute;n y plan de acci&oacute;n</h2>
+    <p>Todo reclamo o queja sigue un proceso definido, con un responsable y plazos internos que corren <strong>por debajo</strong> del plazo legal m&aacute;ximo.</p>
+    <ol class="legal-steps">
+      <li><strong>D&iacute;a 0 &mdash; Recepci&oacute;n y registro.</strong> El reclamo se registra con un c&oacute;digo correlativo y te enviamos la constancia con copia de lo registrado.</li>
+      <li><strong>D&iacute;a 1&ndash;2 &mdash; Acuse y asignaci&oacute;n.</strong> Confirmamos la recepci&oacute;n, asignamos un responsable interno del caso y te indicamos la fecha l&iacute;mite de respuesta.</li>
+      <li><strong>D&iacute;a 3&ndash;8 &mdash; An&aacute;lisis.</strong> Revisamos el contrato, los entregables y las comunicaciones del encargo. Si falta informaci&oacute;n, te la solicitamos una sola vez y de forma consolidada.</li>
+      <li><strong>D&iacute;a 9&ndash;12 &mdash; Propuesta de soluci&oacute;n.</strong> Definimos la medida correctiva: correcci&oacute;n o nueva versi&oacute;n de la obra, reprogramaci&oacute;n, nota de cr&eacute;dito o devoluci&oacute;n, seg&uacute;n corresponda.</li>
+      <li><strong>Antes del d&iacute;a 15 h&aacute;bil &mdash; Respuesta formal.</strong> Respondemos por escrito, de forma motivada, dentro del plazo de <strong>quince (15) d&iacute;as h&aacute;biles improrrogables</strong> que exige el art&iacute;culo 24 de la Ley N.&ordm; 29571, modificado por la Ley N.&ordm; 31435.</li>
+      <li><strong>Cierre y mejora.</strong> Registramos la causa ra&iacute;z y la acci&oacute;n correctiva. Los reclamos se revisan de forma peri&oacute;dica para corregir el proceso que los origin&oacute;, no solo el caso puntual.</li>
+    </ol>
+    <p>Si la respuesta no te satisface, conservas &iacute;ntegro tu derecho de acudir al Indecopi, a la v&iacute;a arbitral cuando el contrato la prevea, o al Poder Judicial.</p>
+    <p class="en">EN &mdash; Every complaint is registered, acknowledged within 2 working days, analysed, and answered in writing before the statutory 15-working-day deadline. Root causes are logged and reviewed so the underlying process is corrected, not just the individual case.</p>
+  </section>
+
+  <!-- ============================================================
+       5. GOBIERNO CORPORATIVO — pedido por la abogada. Deliberadamente
+       redactado SIN inventar órganos que no existen (no hay directorio
+       ni comités en una S.A.C. recién constituida). Describe cómo se
+       decide de verdad, más las políticas que sí se pueden sostener.
+       ============================================================ -->
+  <section id="gobierno">
+    <h2><span class="pk">&#9650;</span> Gobierno Corporativo</h2>
+    <p>Apusonic S.A.C. es una sociedad an&oacute;nima cerrada constituida en Lima y regida por la <strong>Ley General de Sociedades (Ley N.&ordm; 26887)</strong> y su estatuto. La Junta General de Accionistas es el &oacute;rgano m&aacute;ximo y la Gerencia General ejerce la representaci&oacute;n legal y la conducci&oacute;n ordinaria del negocio.</p>
+
+    <h3>Principios que nos obligan</h3>
+    <ul>
+      <li><strong>Integridad y anticorrupci&oacute;n.</strong> Prohibimos todo pago, obsequio, atenci&oacute;n o beneficio dirigido a obtener una ventaja indebida, en particular ante funcionarios p&uacute;blicos. Esta prohibici&oacute;n no admite excepciones por urgencia comercial.</li>
+      <li><strong>Contrataci&oacute;n p&uacute;blica.</strong> Cuando participamos en procesos con el Estado, lo hacemos a trav&eacute;s de los mecanismos de la <strong>Ley de Contrataciones del Estado</strong>, con inscripci&oacute;n vigente en el <strong>Registro Nacional de Proveedores (RNP)</strong> y respeto irrestricto de las reglas de cada convocatoria.</li>
+      <li><strong>Conflicto de intereses.</strong> Todo v&iacute;nculo personal, familiar o econ&oacute;mico con un cliente, proveedor o entidad convocante debe declararse antes de participar en la decisi&oacute;n, y quien lo declara se aparta de ella.</li>
+      <li><strong>Titularidad y trazabilidad de la obra.</strong> Cada obra se documenta en su contrato: qui&eacute;n compone, qu&eacute; derechos se ceden, qu&eacute; participaci&oacute;n de autor se retiene y c&oacute;mo se registra ante la sociedad de gesti&oacute;n colectiva correspondiente. No entregamos como original una obra que no lo sea.</li>
+      <li><strong>Confidencialidad del cliente.</strong> Los proyectos, materiales y estrategias de nuestros clientes son confidenciales y no se difunden ni se usan como referencia comercial sin autorizaci&oacute;n escrita.</li>
+      <li><strong>Cumplimiento laboral y de propiedad intelectual.</strong> M&uacute;sicos, orquestadores y colaboradores son contratados con acuerdos escritos que definen su remuneraci&oacute;n y el alcance de los derechos cedidos.</li>
+    </ul>
+    <p>Estos principios obligan a accionistas, gerencia, personal y colaboradores externos, y su incumplimiento da lugar a la terminaci&oacute;n del v&iacute;nculo contractual y, cuando corresponda, a la denuncia ante la autoridad competente.</p>
+    <p class="en">EN &mdash; Apusonic S.A.C. is governed by Peru&rsquo;s General Companies Act. Our binding commitments cover anti-corruption (no facilitation payments, no exceptions), lawful public procurement through the National Suppliers Registry, declared conflicts of interest, documented authorship and rights chains, client confidentiality, and written agreements with every contributing musician.</p>
+  </section>
+
+  <!-- ============================================================
+       6. CANAL DE DENUNCIAS — pedido por la abogada. Un canal sirve
+       solo si el denunciante confía en él: por eso el correo va a un
+       buzón distinto del comercial y se admite el anonimato.
+       ============================================================ -->
+  <section id="denuncias">
+    <h2><span class="pk">&#9650;</span> Canal de Denuncias</h2>
+    <p>Cualquier persona &mdash; trabajador, colaborador, cliente, proveedor o tercero &mdash; puede reportar conductas contrarias a la ley o a nuestros principios: actos de corrupci&oacute;n o soborno, fraude, conflictos de inter&eacute;s no declarados, uso indebido de obras o derechos de autor, hostigamiento o discriminaci&oacute;n, y cualquier irregularidad en procesos de contrataci&oacute;n.</p>
+    <h3>C&oacute;mo denunciar</h3>
+    <p>Escribe a <a href="mailto:denuncias@apusonic.pe">denuncias@apusonic.pe</a>, un buz&oacute;n separado de los canales comerciales y de acceso restringido. Puedes incluir tus datos o hacerlo de forma <strong>an&oacute;nima</strong>; en ambos casos la denuncia se investiga. Ayuda describir el hecho, la fecha, las personas involucradas y cualquier evidencia disponible.</p>
+    <h3>Nuestros compromisos</h3>
+    <ul>
+      <li><strong>Confidencialidad.</strong> La identidad del denunciante se mantiene reservada y se revela solo si la ley lo exige.</li>
+      <li><strong>No represalia.</strong> Prohibimos toda represalia &mdash; despido, sanci&oacute;n, exclusi&oacute;n o perjuicio &mdash; contra quien denuncia de buena fe, incluso si la denuncia no llega a acreditarse. La represalia es en s&iacute; misma una falta sancionable.</li>
+      <li><strong>Imparcialidad.</strong> Quien est&eacute; involucrado en los hechos no participa en la investigaci&oacute;n ni en la decisi&oacute;n.</li>
+      <li><strong>Plazos.</strong> Acusamos recibo en <strong>5 d&iacute;as h&aacute;biles</strong> y comunicamos el resultado en un plazo m&aacute;ximo de <strong>30 d&iacute;as h&aacute;biles</strong>, prorrogable de forma motivada si el caso lo requiere.</li>
+    </ul>
+    <p>Este canal no reemplaza al Libro de Reclamaciones: si tu asunto es una disconformidad con un servicio contratado, us&aacute; la <a href="#libro">v&iacute;a de reclamos</a>.</p>
+    <p class="en">EN &mdash; Anyone may report corruption, fraud, undeclared conflicts, misuse of works or rights, harassment or discrimination to denuncias@apusonic.pe, anonymously if preferred. We guarantee confidentiality, strict non-retaliation for good-faith reports, impartial handling, acknowledgement within 5 working days and an outcome within 30.</p>
+  </section>
+
+  <!-- ============================================================
+       7. CÓDIGO DE BUENAS PRÁCTICAS — la abogada sugirió "sería bueno
+       en español y quechua". Se incluye un extracto en quechua sureño
+       (chanka/collao) de los compromisos, no una traducción completa:
+       traducir mal un texto legal al quechua sería peor que no hacerlo.
+       PENDIENTE: revisión por traductor quechua certificado antes del
+       lanzamiento — no publicar el bloque quechua sin esa revisión.
+       ============================================================ -->
+  <section id="practicas">
+    <h2><span class="pk">&#9650;</span> C&oacute;digo de Buenas Pr&aacute;cticas</h2>
+    <p>C&oacute;mo trabajamos, y a qu&eacute; pueden exigirnos nuestros clientes y colaboradores:</p>
+    <ul>
+      <li><strong>Originalidad verificable.</strong> Toda obra que entregamos como original es compuesta para el encargo. No reutilizamos material de cat&aacute;logo ni entregamos como propio lo que no lo es.</li>
+      <li><strong>Claridad sobre los derechos.</strong> Antes de firmar, el cliente sabe exactamente qu&eacute; derechos adquiere, cu&aacute;les retenemos y por cu&aacute;nto tiempo. Sin cl&aacute;usulas sorpresa sobre titularidad o regal&iacute;as.</li>
+      <li><strong>Precio y alcance por escrito.</strong> Cotizaciones con alcance, entregables, n&uacute;mero de revisiones y plazos definidos. Todo cambio de alcance se acuerda por escrito antes de ejecutarse.</li>
+      <li><strong>Cr&eacute;dito justo.</strong> Compositores, int&eacute;rpretes y arreglistas son acreditados y registrados conforme a su aporte real.</li>
+      <li><strong>Respeto cultural.</strong> Cuando trabajamos con m&uacute;sica de ra&iacute;z andina o amaz&oacute;nica, lo hacemos con m&uacute;sicos de esas tradiciones, remunerados y acreditados. No tomamos elementos culturales como decoraci&oacute;n.</li>
+      <li><strong>Comunicaci&oacute;n veraz.</strong> No atribuimos a Apusonic trabajos, clientes ni resultados que no sean reales. Las im&aacute;genes ilustrativas de este sitio son generadas digitalmente y no representan sesiones, clientes ni obras espec&iacute;ficas.</li>
+      <li><strong>Cumplimiento de plazos.</strong> Si un plazo peligra, avisamos apenas lo sabemos, no en la fecha de entrega.</li>
+    </ul>
+
+    <!-- Extracto en quechua sureño — PENDIENTE de revisión profesional -->
+    <div class="legal-qu">
+      <p class="qu-lbl">Runa simipi / En quechua</p>
+      <ul>
+        <li><strong>Mus'uq takita ruwanchik.</strong> Llapan takiyku mus'uqmi, mana huk takimantachu hurqusqa.</li>
+        <li><strong>Sut'inta rimanchik.</strong> Manaraq firmaspa, runaqa yachanmi ima derechochus paypa kanqa.</li>
+        <li><strong>Chaninchay.</strong> Takiq runakunata sutinchanchik, chaninta pagaspa.</li>
+        <li><strong>Cheqaqta willanchik.</strong> Mana llullakuspa willanchik ima ruwasqaykutapas.</li>
+      </ul>
+    </div>
+
+    <p class="en">EN &mdash; Our practice code commits us to verifiable originality, transparent rights terms agreed before signing, written scope and pricing, fair credit for every contributor, respectful and paid collaboration with Andean and Amazonian musicians, truthful communication (the illustrative imagery on this site is digitally generated and depicts no specific session, client or work), and early warning whenever a deadline is at risk.</p>
+  </section>
+
+  <!-- ============================================================
+       8. CONTACTO Y HORARIOS — pedido por la abogada. Sin WhatsApp
+       ni número personal: decisión de negocio ya tomada (canal
+       corporativo escrito, no mensajería personal).
+       ============================================================ -->
+  <section id="contacto">
+    <h2><span class="pk">&#9650;</span> Contacto y horarios de atenci&oacute;n</h2>
+    <table class="ck-table">
+      <tr><th>Canal</th><th>Direcci&oacute;n</th><th>Atenci&oacute;n</th></tr>
+      <tr><td data-l="Canal">Consultas comerciales</td><td data-l="Direcci&oacute;n"><a href="mailto:hola@apusonic.pe">hola@apusonic.pe</a></td><td data-l="Atenci&oacute;n">Respuesta en 1&ndash;2 d&iacute;as h&aacute;biles</td></tr>
+      <tr><td data-l="Canal">Reclamos y quejas</td><td data-l="Direcci&oacute;n"><a href="mailto:reclamos@apusonic.pe">reclamos@apusonic.pe</a></td><td data-l="Atenci&oacute;n">Constancia inmediata &middot; respuesta &le; 15 d&iacute;as h&aacute;biles</td></tr>
+      <tr><td data-l="Canal">Datos personales (ARCO)</td><td data-l="Direcci&oacute;n"><a href="mailto:datos@apusonic.pe">datos@apusonic.pe</a></td><td data-l="Atenci&oacute;n">8 a 10 d&iacute;as h&aacute;biles seg&uacute;n el derecho</td></tr>
+      <tr><td data-l="Canal">Denuncias</td><td data-l="Direcci&oacute;n"><a href="mailto:denuncias@apusonic.pe">denuncias@apusonic.pe</a></td><td data-l="Atenci&oacute;n">Acuse en 5 d&iacute;as h&aacute;biles</td></tr>
+    </table>
+    <p><strong>Horario de atenci&oacute;n:</strong> lunes a viernes, de 9:00 a 18:00 h (GMT-5, hora de Per&uacute;), salvo feriados nacionales. Los mensajes recibidos fuera de ese horario se registran con la fecha del siguiente d&iacute;a h&aacute;bil.</p>
+    <p><strong>Domicilio fiscal:</strong> Av. Larco 1301, Miraflores, Lima, Per&uacute;. La atenci&oacute;n presencial es &uacute;nicamente con cita previa coordinada por correo.</p>
+    <p class="en">EN &mdash; Written channels above; office hours Monday to Friday, 9:00&ndash;18:00 Peru time (GMT-5), excluding national holidays. In-person meetings by prior appointment only.</p>
   </section>
 
   <section id="terminos">
     <h2><span class="pk">&#9650;</span> T&eacute;rminos de Uso</h2>
     <p>El contenido de este sitio (textos, marcas, m&uacute;sica, dise&ntilde;o) es propiedad de Apusonic S.A.C. o de sus licenciantes y est&aacute; protegido por la legislaci&oacute;n peruana de derecho de autor y propiedad industrial. No est&aacute; permitida su reproducci&oacute;n sin autorizaci&oacute;n escrita. La informaci&oacute;n del sitio es de car&aacute;cter referencial y no constituye oferta contractual; toda comisi&oacute;n de obra se rige por su contrato espec&iacute;fico.</p>
-    <p class="en">EN &mdash; All site content is the property of Apusonic S.A.C. or its licensors and protected under Peruvian copyright law. Reproduction requires written permission. Site information is referential; commissions are governed by their specific contracts.</p>
+    <p>Las im&aacute;genes de este sitio son <strong>ilustraciones generadas digitalmente</strong>. No documentan sesiones de grabaci&oacute;n, clientes, obras ni eventos reales, y se emplean &uacute;nicamente con fines expresivos.</p>
+    <p>Este sitio se rige por la legislaci&oacute;n peruana. Cualquier controversia derivada de su uso se somete a los jueces y tribunales del <strong>Cercado de Lima</strong>, salvo pacto distinto en el contrato aplicable.</p>
+    <p class="en">EN &mdash; All site content is the property of Apusonic S.A.C. or its licensors and protected under Peruvian copyright law. Reproduction requires written permission. Imagery is digitally generated and documents no real session, client, work or event. Site information is referential; commissions are governed by their specific contracts. Peruvian law applies, with jurisdiction in Cercado de Lima.</p>
   </section>
 
   <p class="legal-upd">&Uacute;ltima actualizaci&oacute;n / Last updated: 2026</p>
